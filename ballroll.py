@@ -9,9 +9,9 @@ cd=x[1]
 dt=0.1
 Fy=-3
 ltop=(len(x[1:-1][::2]))*2*np.pi
-print(ltop)
+#print(ltop)
 while cd<ltop:
-    print(cd)
+    #print(cd)
     ss = SystemElements()
     element_type = 'truss'
 
