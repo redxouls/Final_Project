@@ -1,6 +1,5 @@
-import sys
-import pygame
-import classes 
+import sys, pygame, structure
+import numpy as np
 from pygame.locals import *
 
 pygame.init()
@@ -13,8 +12,8 @@ screen = pygame.display.set_mode((width, height))
 
 # Game loop.
 screen.fill((255,255,255))
-main_structure = classes.structure(screen)
-
+main_structure = structure.Structure(screen)
+main_structure.create()
 while True:
   for event in pygame.event.get():
     if event.type == QUIT:
@@ -27,10 +26,10 @@ while True:
     if event.type == MOUSEBUTTONDOWN:
         downcod = pygame.mouse.get_pos()
         main_structure.clicked(MOUSEBUTTONDOWN,downcod)
-
+    main_structure.update()
   # Update.
   
   # Draw.
   
-  pygame.display.flip()
-  fpsClock.tick(fps)
+    pygame.display.flip()
+    fpsClock.tick(fps)
