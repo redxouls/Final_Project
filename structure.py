@@ -84,20 +84,21 @@ class Structure:
         ylist+=100
         print(xlist,ylist)     
         cur = None
-        nex = None
+        prev = None
         for i in range(len(xlist)):
             if i%2 ==1:
+                prev=cur
                 cur = self.add_node(xlist[i],ylist[i]-80)
             else:
-                nex = self.add_node(xlist[i],ylist[i])
-            if cur != None and nex != None:
-                self.add_truss(cur,nex)
+                prev=cur
+                cur = self.add_node(xlist[i],ylist[i])
+            if cur != None and prev != None:
+                self.add_truss(prev,cur)
         
         for i in range(1,6,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])
         for i in range(0,7,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])    
-    
     def two_end(self):
         if len(self.nodes)>0:
             left, right = self.nodes[0].cod,self.nodes[0].cod

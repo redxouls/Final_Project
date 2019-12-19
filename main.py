@@ -31,6 +31,5 @@ while True:
   # Update.
   
   # Draw.
-  
     pygame.display.flip()
     fpsClock.tick(fps)
