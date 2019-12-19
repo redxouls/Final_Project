@@ -8,33 +8,43 @@ class Structure:
     def __init__(self,screen):
         self.trusses = []
         self.nodes = []
+        self.codtrusses=[]
+        self.codnodes = []
         self.click = [False,0]
         self.screen = screen
+    
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
         if newnode!= None:
             self.trusses.append(newnode)
+    
     def add_node(self,x,y):
         new_node = Node(x=int(x),y=int(y),screen=self.screen)
         self.nodes.append(new_node)
+        self.codnodes.append(new_node.cod)
         return new_node
+    
     def add_truss(self,nodeA,nodeB):
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
+        self.codtrusses.append((new_truss.nodeA.cod,new_truss.nodeB.cod))
         return new_truss
+    
     def length(self,choice):
         if choice == 'nodes':
             return len(self.nodes)
         if choice == 'lines':
             return len(self.trusses)
+    
     def print_result(self):
-        nodes = self.nodes
-        trusses = self.trusses
+        nodes = self.codnodes
+        trusses = self.codtrusses
         for i in range(len(nodes)):
-            print('nodes: ',i,nodes[i].cod)
+            print('nodes: ',i,nodes[i])
         for i in range(len(trusses)):
-            print('lines: ',i,trusses[i].nodeA.cod,'linkto',i,trusses[i].nodeB.cod)
+            print('lines: ',i,trusses[i][0],'linkto',trusses[i][1])
+    
     def clicked(self,event_type,mouse_pos):
         screen = self.screen
         nodes = self.nodes
@@ -63,6 +73,7 @@ class Structure:
                 nodes.append(Node(x=upcod[0],y=upcod[1],screen=screen))
                 trusses.append(Truss(nodes[-1],nodes[click[1]],screen=screen))
                 trusses[-1].draw_Truss()
+    
     def create(self,xlist=0,ylist=0):
         screen = self.screen
         xlist = np.arange(1, 10) * np.pi
@@ -86,9 +97,29 @@ class Structure:
             self.add_truss(self.nodes[i],self.nodes[i+2])
         for i in range(0,7,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])    
-        
+    
+    def two_end(self):
+        if len(self.nodes)>0:
+            left, right = self.nodes[0].cod,self.nodes[0].cod
+            for i in range(len(self.nodes)):
+                node = self.nodes[i]
+                if node.cod[0] <left[0]:
+                    left = node.cod
+                else:
+                    if node.cod[0] == left[0] and node.cod[1]>left[1]:
+                        left = node.cod
+                if node.cod[0] >right[0]:
+                    right = node.cod
+                else:
+                    if node.cod[0] == right[0] and node.cod[1]>right[1]:
+                        right = node.cod
+        return left,right
+    
     def update(self):
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
             i.draw_Truss()
+
+
+

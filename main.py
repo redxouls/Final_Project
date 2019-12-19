@@ -1,4 +1,4 @@
-import sys, pygame, structure
+import sys, pygame, structure, copy
 import numpy as np
 from pygame.locals import *
 
@@ -18,6 +18,7 @@ while True:
   for event in pygame.event.get():
     if event.type == QUIT:
         main_structure.print_result()
+        print(main_structure.two_end())
         pygame.quit()
         sys.exit()
     if event.type == MOUSEBUTTONUP and main_structure.click[0]:
