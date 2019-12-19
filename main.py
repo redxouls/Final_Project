@@ -1,6 +1,7 @@
-import sys, pygame, structure, copy
+import sys, pygame, structure, copy, time
 import numpy as np
 from pygame.locals import *
+from anastruct import SystemElements
 
 pygame.init()
  
@@ -9,7 +10,6 @@ fpsClock = pygame.time.Clock()
 
 width, height = 1280, 960
 screen = pygame.display.set_mode((width, height))
-
 # Game loop.
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
@@ -27,9 +27,10 @@ while True:
     if event.type == MOUSEBUTTONDOWN:
         downcod = pygame.mouse.get_pos()
         main_structure.clicked(MOUSEBUTTONDOWN,downcod)
-    main_structure.update()
+    if event.type == KEYDOWN:
+      pass
   # Update.
-  
+    main_structure.update()
   # Draw.
     pygame.display.flip()
     fpsClock.tick(fps)

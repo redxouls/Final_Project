@@ -1,7 +1,9 @@
-import sys, pygame
+import sys, pygame, time
 import numpy as np
 from pygame.locals import *
 import NodeTruss
+from anastruct import SystemElements
+
 Node = NodeTruss.Node
 Truss = NodeTruss.Truss
 class Structure:
@@ -66,23 +68,22 @@ class Structure:
                 check = nodes[i]
                 if check.clicked(upcod):
                     trusses.append(Truss(nodes[i],nodes[click[1]],screen=screen))
-                    trusses[-1].draw_Truss()
                     upclick = True
                     break
             if not upclick:
                 nodes.append(Node(x=upcod[0],y=upcod[1],screen=screen))
                 trusses.append(Truss(nodes[-1],nodes[click[1]],screen=screen))
-                trusses[-1].draw_Truss()
     
     def create(self,xlist=0,ylist=0):
         screen = self.screen
         xlist = np.arange(1, 10) * np.pi
         ylist = np.cos(xlist)
-        ylist -= ylist.min()            
+        xlist = np.arange(1, 10) *4
+        ylist -= ylist.min()    
+        print(xlist,ylist)        
         xlist*=20
-        ylist*=20
+        ylist*=10
         ylist+=100
-        print(xlist,ylist)     
         cur = None
         prev = None
         for i in range(len(xlist)):
@@ -99,6 +100,7 @@ class Structure:
             self.add_truss(self.nodes[i],self.nodes[i+2])
         for i in range(0,7,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])    
+    
     def two_end(self):
         if len(self.nodes)>0:
             left, right = self.nodes[0].cod,self.nodes[0].cod
@@ -116,11 +118,38 @@ class Structure:
                         right = node.cod
         return left,right
     
+    def analyze(self):
+        if len(self.nodes)<1:
+            return None
+        nodes = self.nodes
+        trusses = self.trusses
+        ss = SystemElements(EA=15000, EI=5000)
+        for i in trusses:
+            ta=[i.nodeA.cod[0],i.nodeA.cod[1]]
+            tb=[i.nodeB.cod[0],i.nodeB.cod[1]]
+            ss.add_element(location=[ta,tb])
+        ss.add_support_hinged(1)
+        ss.add_support_hinged(9)
+        #ss.add_support_roll(1,2)
+        #ss.add_support_roll(1,2)
+        ss.point_load(5,Fy=100)
+        ss.solve()
+        #ss.show_structure()
+        #ss.show_axial_force()
+        #ss.show_displacement()
+        dispalcement = ss.get_node_displacements()    
+        for k in range(len(nodes)):
+            newcod = [nodes[k].cod[0]+dispalcement[k][3],nodes[k].cod[1]+dispalcement[k][2]*0.1]
+            nodes[k].change_cod(newcod)
+        return "success"
     def update(self):
+        self.screen.fill((255,255,255))        
+        self.analyze()
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
             i.draw_Truss()
+        time.sleep(0.1)
 
 
 
