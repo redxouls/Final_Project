@@ -14,6 +14,7 @@ class Structure:
         self.codnodes = []
         self.click = [False,0]
         self.screen = screen
+        self.t = 0
     
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
@@ -132,7 +133,8 @@ class Structure:
         ss.add_support_hinged(9)
         #ss.add_support_roll(1,2)
         #ss.add_support_roll(1,2)
-        ss.point_load(5,Fy=100)
+        self.loadid = 1+int(self.t)*2
+        ss.point_load(self.loadid,Fy=50)
         ss.solve()
         #ss.show_structure()
         #ss.show_axial_force()
@@ -141,14 +143,18 @@ class Structure:
         for k in range(len(nodes)):
             newcod = [nodes[k].cod[0]+dispalcement[k][3],nodes[k].cod[1]+dispalcement[k][2]*0.1]
             nodes[k].change_cod(newcod)
+        self.t+=0.1
         return "success"
+    
     def update(self):
+        screen = self.screen
         self.screen.fill((255,255,255))        
         self.analyze()
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
             i.draw_Truss()
+        pygame.draw.circle(screen, (125,125,155), self.nodes[self.loadid-1].to_int(), 10, 0)
         time.sleep(0.1)
 
 
