@@ -8,6 +8,7 @@ class Node :
         self.y = y
         self.cod = [self.x,self.y]
         self.r = 10
+        self.maxforce = 100
         self.screen = screen
     def draw_node(self):
         screen = self.screen
@@ -26,12 +27,19 @@ class Node :
             return False
     def to_int(self):
         return int(self.cod[0]), int(self.cod[1])
+    def damaged(self,force_ext):
+        return self.maxforce < abs(force_ext)
+
 class Truss(Node):
     def __init__(self,nodeA=None,nodeB=None,screen=None):
         self.nodeA = nodeA
-        self.nodeB =nodeB
+        self.nodeB = nodeB
         self.screen = screen
-    
+        self.maxforce = 100
     def draw_Truss(self):
         screen = self.screen
         pygame.draw.line(self.screen,(0,0,0), self.nodeA.to_int(), self.nodeB.to_int(), 5)
+    def damaged(self,force_ext):
+        return self.maxforce>force_ext
+    def get_cod(self):
+        return self.nodeA.cod[:], self.nodeB.cod[:]
