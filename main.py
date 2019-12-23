@@ -1,5 +1,4 @@
 import sys, pygame, structure, copy, time
-import numpy as np
 from pygame.locals import *
 from anastruct import SystemElements
 
@@ -13,7 +12,9 @@ screen = pygame.display.set_mode((width, height))
 # Game loop.
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
-#main_structure.create()
+main_structure.add_ball()
+main_structure.create()
+
 while True:
   for event in pygame.event.get():
     if event.type == QUIT:

@@ -1,11 +1,13 @@
-import sys, pygame, time
+import sys, pygame, time, ball
 import numpy as np
 from pygame.locals import *
 import NodeTruss
 from anastruct import SystemElements
+from vpython import *
 
 Node = NodeTruss.Node
 Truss = NodeTruss.Truss
+Ball = ball.Ball
 class Structure:
     def __init__(self,screen):
         self.trusses = []
@@ -14,6 +16,7 @@ class Structure:
         self.lastc = 0
         self.screen = screen
         self.t = 0
+        self.balls = []
     
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
@@ -31,6 +34,10 @@ class Structure:
         self.trusses.append(new_truss)
         return new_truss
     
+    def add_ball(self):
+        new_ball = Ball(self.screen)
+        self.balls.append(new_ball)
+
     def length(self,choice):
         if choice == 'nodes':
             return len(self.nodes)
@@ -75,7 +82,6 @@ class Structure:
             self.click = False
             return
     
-    
     def create(self,xlist=0,ylist=0):
         screen = self.screen
         xlist = np.arange(1, 15) * np.pi
@@ -84,10 +90,12 @@ class Structure:
         ylist -= ylist.min()    
         print(xlist,ylist)        
         xlist*=20
+        xlist-=50
         ylist*=10
-        ylist+=100
+        ylist+=300
         cur = None
         prev = None
+
         for i in range(len(xlist)):
             if i%2 ==1:
                 prev=cur
@@ -96,12 +104,16 @@ class Structure:
                 prev=cur
                 cur = self.add_node(xlist[i],ylist[i])
             if cur != None and prev != None:
+                pass
                 self.add_truss(prev,cur)
-        
+        '''
         for i in range(1,len(xlist)-2,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])
+
+        
         for i in range(0,len(xlist)-2,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])    
+        '''
     
     def two_end(self):
         if len(self.nodes)>0:
@@ -123,7 +135,7 @@ class Structure:
                     if node.cod[0] == right[0] and node.cod[1]>right[1]:
                         right = node.cod
                         rightid = i
-        return leftid,rightid
+            return leftid,rightid
     
     def analyze(self):
         if len(self.nodes)<1:
@@ -166,12 +178,40 @@ class Structure:
         self.t+=0.1
         return "success"
     
+    def ball_rolling(self):
+        dt = 0.1
+        self.t += dt
+        for ball in self.balls:
+            if ball.ground_distance(self)!= None:
+                if abs(ball.v.y) < 5 and ball.ground_distance(self)-ball.r < 1 :
+                    print("flag")
+                    ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
+                    
+                    if ball.fly(self):
+                        ball.a = vector(0,ball.g,0)
+                    
+                else:
+                    ball.a.x = 0
+                    ball.a.y = ball.g
+                if ball.ground_distance(self)-ball.r < 0.005 :
+                    ball.collision(self)
+                    ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
+                    
+                       
+            ball.v += ball.a*dt
+            ball.pos += ball.v*dt
+              
+            
+
     def update(self):
         screen = self.screen
         #self.analyze()
-        self.screen.fill((255,255,255))        
+        self.screen.fill((255,255,255))    
+        self.ball_rolling()    
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
             i.draw_Truss()
+        for i in self.balls:
+            i.draw_ball()
         #time.sleep(0.1)
