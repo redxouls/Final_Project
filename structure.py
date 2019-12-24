@@ -1,7 +1,7 @@
-import sys, pygame, time, ball
+import sys, pygame, time
 import numpy as np
 from pygame.locals import *
-import NodeTruss
+import NodeTruss, ball
 from anastruct import SystemElements
 from vpython import *
 
@@ -17,7 +17,7 @@ class Structure:
         self.screen = screen
         self.t = 0
         self.balls = []
-    
+        self.collision=0
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -109,8 +109,6 @@ class Structure:
         '''
         for i in range(1,len(xlist)-2,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])
-
-        
         for i in range(0,len(xlist)-2,2):
             self.add_truss(self.nodes[i],self.nodes[i+2])    
         '''
@@ -183,19 +181,17 @@ class Structure:
         self.t += dt
         for ball in self.balls:
             if ball.ground_distance(self)!= None:
-                if abs(ball.v.y) < 5 and ball.ground_distance(self)-ball.r < 1 :
-                    print("flag")
-                    ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
-                    
-                    if ball.fly(self):
-                        ball.a = vector(0,ball.g,0)
-                    
-                else:
-                    ball.a.x = 0
-                    ball.a.y = ball.g
-                if ball.ground_distance(self)-ball.r < 0.005 :
+                if ball.ground_distance(self)-ball.r < 0.001 :
+                    self.collision = self.t
+                    print('gg',ball.v.mag,self.t)
                     ball.collision(self)
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
+                else:
+                    ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
+                if ball.ground_distance(self)-ball.r < 1:
+                    ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
+            else:
+                ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
                     
                        
             ball.v += ball.a*dt
@@ -207,7 +203,8 @@ class Structure:
         screen = self.screen
         #self.analyze()
         self.screen.fill((255,255,255))    
-        self.ball_rolling()    
+        if self.balls != None:
+            self.ball_rolling()    
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:

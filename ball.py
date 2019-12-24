@@ -11,11 +11,12 @@ class Ball:
         self.screen = screen
         self.r = 20
         self.g = 9.8
-        self.efficient = 0.9
-        self.power = 20.0
+        self.efficient = -0.2
+        self.power = 70.0
         self.v = vector(0,0,0)
         self.pos = vector(120.0,100.0,0)
         self.a = vector(0,self.g,0)
+        self.free = True
     def distance(self,*,node=None,truss=None):
         if node != None:
             return (self.pos[0]-node.cod[0]**2+(self.pos[1]-node.cod[1]**2)**0.5)
@@ -28,6 +29,8 @@ class Ball:
         for i in range(len(structure.trusses)):
             truss = structure.trusses[i] 
             if self.pos.x>=truss.nodeA.x and self.pos.x<truss.nodeB.x:
+                return i
+            if self.pos.x<truss.nodeA.x and self.pos.x>=truss.nodeB.x:
                 return i
     def ground_distance(self,structure):
         if self.nearest(structure) == None:
@@ -46,7 +49,9 @@ class Ball:
         v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
         v2 /= v2.mag
         N = vector(-v2.y,v2.x,0)
-        newv = -self.v.dot(N)*N*self.efficient + self.v.dot(v2)*v2
+        if N.dot(self.v)<0:
+            return
+        newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
         self.v = newv
     
     def engine(self,structure):
@@ -56,6 +61,8 @@ class Ball:
         v1 = self.pos - vector(ground.nodeA.x,ground.nodeA.y,0)
         v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
         v2 /= v2.mag
+        if v2.x<0:
+            v2*=-1
         return self.power*v2
     
     def normala(self,structure):
@@ -77,3 +84,4 @@ class Ball:
             return True
         else:
             return False
+    

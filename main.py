@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((width, height))
 # Game loop.
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
-main_structure.add_ball()
+
 main_structure.create()
 
 while True:
@@ -31,7 +31,7 @@ while True:
         main_structure.clicked(MOUSEBUTTONDOWN,downcod,event.button)
 
     if event.type == KEYDOWN:
-      pass
+      main_structure.add_ball()
   # Update.
     main_structure.update()
   # Draw.
