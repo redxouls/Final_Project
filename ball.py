@@ -49,7 +49,7 @@ class Ball:
         v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
         v2 /= v2.mag
         N = vector(-v2.y,v2.x,0)
-        if N.dot(self.v)<0:
+        if N.dot(self.v)<=0:
             return
         newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
         self.v = newv

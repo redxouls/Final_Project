@@ -13,7 +13,7 @@ screen = pygame.display.set_mode((width, height))
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
 
-main_structure.create()
+#main_structure.create()
 
 while True:
   for event in pygame.event.get():
@@ -33,7 +33,7 @@ while True:
     if event.type == KEYDOWN:
       main_structure.add_ball()
   # Update.
-    main_structure.update()
+  main_structure.update()
   # Draw.
-    pygame.display.flip()
-    fpsClock.tick(fps)
+  pygame.display.flip()
+  fpsClock.tick(fps)
