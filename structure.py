@@ -17,7 +17,7 @@ class Structure:
         self.screen = screen
         self.t = 0
         self.balls = []
-        self.collision=0
+        self.force = None
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -88,7 +88,6 @@ class Structure:
         ylist = np.cos(xlist)
         xlist = np.arange(1, 15) *4
         ylist -= ylist.min()    
-        print(xlist,ylist)        
         xlist*=20
         xlist-=50
         ylist*=10
@@ -157,21 +156,23 @@ class Structure:
         ss.show_axial_force()
         #ss.show_displacement()
         dispalcements = ss.get_node_displacements()
+        for k in range(len(nodes)):
+            newcod = [nodes[k].cod[0]+dispalcements[k][3],nodes[k].cod[1]+dispalcements[k][2]*0.1]
+            nodes[k].change_cod(newcod)
+        
         forces = ss.get_node_results_system()
         axial_forces = ss.get_element_result_range('axial')
         #print([(round(i[0],3),round(i[2],3)) for i in forces])
         #print([round(i,3) for i in axial_forces])
-        discon = []
+        
+        
         for i in range(len(axial_forces)):
             force = axial_forces[i]
             tpoint = nodes.index(trusses[i].nodeA), nodes.index(trusses[i].nodeB)
             if nodes[tpoint[0]].damaged(force) or nodes[tpoint[1]].damaged(force):
                 discon.append((i,nodes[tpoint[0]].damaged(force),nodes[tpoint[1]].damaged(force)))
-        print(discon)
 
-        for k in range(len(nodes)):
-            newcod = [nodes[k].cod[0]+dispalcements[k][3],nodes[k].cod[1]+dispalcements[k][2]*0.1]
-            nodes[k].change_cod(newcod)
+        
 
         self.t+=0.1
         return "success"
@@ -192,6 +193,7 @@ class Structure:
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
             else:
                 ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
+
                     
                        
             ball.v += ball.a*dt

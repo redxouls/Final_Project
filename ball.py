@@ -11,8 +11,9 @@ class Ball:
         self.screen = screen
         self.r = 20
         self.g = 9.8
-        self.efficient = -0.2
-        self.power = 70.0
+        self.efficient = -0.1
+        self.colleffi = 0.8
+        self.power = 40.0
         self.v = vector(0,0,0)
         self.pos = vector(120.0,100.0,0)
         self.a = vector(0,self.g,0)
@@ -49,10 +50,12 @@ class Ball:
         v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
         v2 /= v2.mag
         N = vector(-v2.y,v2.x,0)
+        if N.y<0:
+            N*=-1
         if N.dot(self.v)<=0:
             return
         newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
-        self.v = newv
+        self.v = newv*self.colleffi
     
     def engine(self,structure):
         if self.nearest(structure) == None:
@@ -74,14 +77,4 @@ class Ball:
         v2 /= v2.mag
         N = vector(-v2.y,v2.x,0)
         return N.dot(vector(0,self.g,0))*N
-    
-    def fly(self,structure):
-        if self.nearest(structure) == None:
-            return False
-        ground = structure.trusses[self.nearest(structure)]
-        #or abs(self.pos.x-ground.nodeB.x)<5
-        if abs(self.pos.x-ground.nodeA.x)<5 :
-            return True
-        else:
-            return False
     
