@@ -18,6 +18,8 @@ class Structure:
         self.t = 0
         self.balls = []
         self.force = None
+        self.roadtruss=[]
+        self.mode=0
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -32,6 +34,8 @@ class Structure:
     def add_truss(self,nodeA,nodeB):
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
+        if self.mode==0:
+            self.roadtruss.append(new_truss)
         return new_truss
     
     def add_ball(self):
@@ -48,9 +52,9 @@ class Structure:
         nodes = self.nodes
         trusses = self.trusses
         for i in range(len(nodes)):
-            print('nodes: ',i,nodes[i].cod)
+            print('nodes: ',i,nodes[i].pos)
         for i in range(len(trusses)):
-            print('lines: ',i,trusses[i].nodeA.cod,'linkto',trusses[i].nodeB.cod)
+            print('lines: ',i,trusses[i].nodeA.pos,'linkto',trusses[i].nodeB.pos)
     
     def clicked(self,event_type,mouse_pos,event_button):
         screen,nodes,click,trusses = self.screen, self.nodes, self.click, self.trusses
@@ -189,13 +193,13 @@ class Structure:
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
                 else:
                     ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
-                if ball.ground_distance(self)-ball.r < 1:
+                
+                if ball.ground_distance(self)-ball.r < 0.01:
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
+                
             else:
                 ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
 
-                    
-                       
             ball.v += ball.a*dt
             ball.pos += ball.v*dt
               
@@ -210,7 +214,10 @@ class Structure:
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
-            i.draw_Truss()
+            if i.collided :
+                i.draw_marked_Truss()
+            else:
+                i.draw_Truss()
         for i in self.balls:
             i.draw_ball()
         #time.sleep(0.1)

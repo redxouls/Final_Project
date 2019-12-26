@@ -1,7 +1,7 @@
 import sys, pygame, time
 import numpy as np
 from pygame.locals import *
-import NodeTruss, structure
+import NodeTruss
 from anastruct import SystemElements
 from vpython import *
 
@@ -12,8 +12,8 @@ class Ball:
         self.r = 20
         self.g = 9.8
         self.efficient = -0.1
-        self.colleffi = 0.8
-        self.power = 40.0
+        self.colleffi = 1
+        self.power = 80.0
         self.v = vector(0,0,0)
         self.pos = vector(120.0,100.0,0)
         self.a = vector(0,self.g,0)
@@ -29,16 +29,16 @@ class Ball:
     def nearest(self,structure):
         for i in range(len(structure.trusses)):
             truss = structure.trusses[i] 
-            if self.pos.x>=truss.nodeA.x and self.pos.x<truss.nodeB.x:
+            if self.pos.x>=truss.nodeA.pos.x and self.pos.x<truss.nodeB.pos.x:
                 return i
-            if self.pos.x<truss.nodeA.x and self.pos.x>=truss.nodeB.x:
+            if self.pos.x<truss.nodeA.pos.x and self.pos.x>=truss.nodeB.pos.x:
                 return i
     def ground_distance(self,structure):
         if self.nearest(structure) == None:
             return
         ground = structure.trusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.x,ground.nodeA.y,0)
-        v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
+        v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
+        v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         theta = acos(v1.dot(v2)/(v1.mag*v2.mag))
         distance = v1.mag*sin(theta)
         return distance
@@ -46,34 +46,41 @@ class Ball:
         if self.nearest(structure) == None:
             return
         ground = structure.trusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.x,ground.nodeA.y,0)
-        v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
-        v2 /= v2.mag
-        N = vector(-v2.y,v2.x,0)
-        if N.y<0:
-            N*=-1
-        if N.dot(self.v)<=0:
+        if ground.nodeA.pos.x<=ground.nodeA.pos.x:
+            v1 = self.pos-vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
+            v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
+            v2 /= v2.mag
+        else:
+            v1 = self.pos-vector(ground.nodeA.pos.x,ground.nodeB.pos.y,0)
+            v2 = vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0) - vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0)
+            v2 /= v2.mag
+        N = vector(v2.y,-v2.x,0)
+        print(self.v,N)
+        if (N.dot(self.v)<0 and v1.dot(N)>0) or (N.dot(self.v)>0 and v1.dot(N)<0):
+            print('flag')
+            newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
+            self.v = newv*self.colleffi
+        else:
             return
-        newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
-        self.v = newv*self.colleffi
     
     def engine(self,structure):
         if self.nearest(structure) == None:
             return
         ground = structure.trusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.x,ground.nodeA.y,0)
-        v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
+        v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
+        v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 /= v2.mag
         if v2.x<0:
             v2*=-1
+        ground.collided = True
         return self.power*v2
     
     def normala(self,structure):
         if self.nearest(structure) == None:
             return
         ground = structure.trusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.x,ground.nodeA.y,0)
-        v2 = vector(ground.nodeB.x,ground.nodeB.y,0) - vector(ground.nodeA.x,ground.nodeA.y,0)
+        v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
+        v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 /= v2.mag
         N = vector(-v2.y,v2.x,0)
         return N.dot(vector(0,self.g,0))*N
