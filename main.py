@@ -26,6 +26,7 @@ for i in range(3):
 
 while True:
     for event in pygame.event.get():
+        #print(event.type)
         if event.type == QUIT:
             main_structure.print_result()
             print(main_structure.two_end())
@@ -38,14 +39,16 @@ while True:
         if event.type == MOUSEBUTTONDOWN:
             downcod = pygame.mouse.get_pos()
             main_structure.clicked(MOUSEBUTTONDOWN,downcod,event.button)
-
+        
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
                 main_structure.add_ball()
             if event.key == K_1:
                 main_structure.mode=0
+                print('mode1')
             if event.key == K_2:
                 main_structure.mode=1
+                print('mode2')
     # Update.
     main_structure.update()
     '''

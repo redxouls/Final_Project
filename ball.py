@@ -27,8 +27,9 @@ class Ball:
         screen = self.screen
         pygame.draw.circle(screen, (123, 127, 255), [int(self.pos.x),int(self.pos.y)], self.r, 0)
     def nearest(self,structure):
-        for i in range(len(structure.trusses)):
-            truss = structure.trusses[i] 
+        print(structure.roadtrusses)
+        for i in range(len(structure.roadtrusses)):
+            truss = structure.roadtrusses[i] 
             if self.pos.x>=truss.nodeA.pos.x and self.pos.x<truss.nodeB.pos.x:
                 return i
             if self.pos.x<truss.nodeA.pos.x and self.pos.x>=truss.nodeB.pos.x:
@@ -36,7 +37,7 @@ class Ball:
     def ground_distance(self,structure):
         if self.nearest(structure) == None:
             return
-        ground = structure.trusses[self.nearest(structure)]
+        ground = structure.roadtrusses[self.nearest(structure)]
         v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         theta = acos(v1.dot(v2)/(v1.mag*v2.mag))
@@ -45,7 +46,7 @@ class Ball:
     def collision(self,structure):
         if self.nearest(structure) == None:
             return
-        ground = structure.trusses[self.nearest(structure)]
+        ground = structure.roadtrusses[self.nearest(structure)]
         if ground.nodeA.pos.x<=ground.nodeA.pos.x:
             v1 = self.pos-vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
             v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
@@ -66,7 +67,7 @@ class Ball:
     def engine(self,structure):
         if self.nearest(structure) == None:
             return
-        ground = structure.trusses[self.nearest(structure)]
+        ground = structure.roadtrusses[self.nearest(structure)]
         v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 /= v2.mag
@@ -78,7 +79,7 @@ class Ball:
     def normala(self,structure):
         if self.nearest(structure) == None:
             return
-        ground = structure.trusses[self.nearest(structure)]
+        ground = structure.roadtrusses[self.nearest(structure)]
         v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 /= v2.mag

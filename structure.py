@@ -18,7 +18,7 @@ class Structure:
         self.t = 0
         self.balls = []
         self.force = None
-        self.roadtruss=[]
+        self.roadtrusses=[]
         self.mode=0
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
@@ -35,7 +35,8 @@ class Structure:
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
         if self.mode==0:
-            self.roadtruss.append(new_truss)
+            print('flag')
+            self.roadtrusses.append(new_truss)
         return new_truss
     
     def add_ball(self):
