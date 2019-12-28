@@ -1,9 +1,11 @@
-import sys, pygame, time
+import sys, pygame, time, copy
 import numpy as np
 from pygame.locals import *
 import NodeTruss, ball
 from anastruct import SystemElements
 from vpython import *
+
+
 
 Node = NodeTruss.Node
 Truss = NodeTruss.Truss
@@ -17,9 +19,15 @@ class Structure:
         self.screen = screen
         self.t = 0
         self.balls = []
-        self.force = None
+        self.Bios = []
+        self.loadid = None
         self.roadtrusses=[]
         self.mode=0
+        self.running = False
+        self.reset = False
+        self.first = False
+        self.collapse = False
+    
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -35,20 +43,15 @@ class Structure:
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
         if self.mode==0:
-            print('flag')
             self.roadtrusses.append(new_truss)
+        #self.Bios.append(NodeTruss.Bio(nodeA=nodeA,nodeB=nodeB,screen=self.screen))
+        print(self.Bios)
         return new_truss
     
     def add_ball(self):
         new_ball = Ball(self.screen)
         self.balls.append(new_ball)
 
-    def length(self,choice):
-        if choice == 'nodes':
-            return len(self.nodes)
-        if choice == 'trusses':
-            return len(self.trusses)
-    
     def print_result(self):
         nodes = self.nodes
         trusses = self.trusses
@@ -119,23 +122,23 @@ class Structure:
     
     def two_end(self):
         if len(self.nodes)>0:
-            left, right = self.nodes[0].cod,self.nodes[0].cod
+            left, right = self.nodes[0].pos,self.nodes[0].pos
             leftid, rightid = 0, 0
             for i in range(len(self.nodes)):
                 node = self.nodes[i]
-                if node.cod[0] <left[0]:
-                    left = node.cod
+                if node.pos.x <left.x:
+                    left = node.pos
                     leftid = i
                 else:
-                    if node.cod[0] == left[0] and node.cod[1]>left[1]:
-                        left = node.cod
+                    if node.pos.x == left.x and node.pos.y>left.y:
+                        left = node.pos
                         leftid = i
-                if node.cod[0] >right[0]:
-                    right = node.cod
+                if node.pos.x >right.x:
+                    right = node.pos
                     rightid = i
                 else:
-                    if node.cod[0] == right[0] and node.cod[1]>right[1]:
-                        right = node.cod
+                    if node.pos.x == right.x and node.pos.y>right.y:
+                        right = node.pos
                         rightid = i
             return leftid,rightid
     
@@ -146,38 +149,30 @@ class Structure:
         trusses = self.trusses
         ss = SystemElements(EA=15000, EI=5000)
         for i in trusses:
-            ta=[i.nodeA.cod[0],i.nodeA.cod[1]]
-            tb=[i.nodeB.cod[0],i.nodeB.cod[1]]
+            ta=[i.nodeA.pos.x,i.nodeA.pos.y]
+            tb=[i.nodeB.pos.x,i.nodeB.pos.y]
             ss.add_element(location=[ta,tb])
         ends = self.two_end()
         ss.add_support_hinged(ends[0]+1)
         ss.add_support_hinged(ends[1]+1)
         #ss.add_support_roll(1,2)
         #ss.add_support_roll(1,2)
-        self.loadid = 3+int(self.t)*2
-        ss.point_load(self.loadid,Fy=50)
+        if self.loadid != None:
+            print(self.loadid)
+            for i in self.loadid:
+                ss.point_load(i+1,Fy=30)
+                #ss.show_structure()
+            
+        else:
+            return
         ss.solve()
         #ss.show_structure()
-        ss.show_axial_force()
+        #ss.show_axial_force()
         #ss.show_displacement()
         dispalcements = ss.get_node_displacements()
         for k in range(len(nodes)):
-            newcod = [nodes[k].cod[0]+dispalcements[k][3],nodes[k].cod[1]+dispalcements[k][2]*0.1]
-            nodes[k].change_cod(newcod)
-        
-        forces = ss.get_node_results_system()
-        axial_forces = ss.get_element_result_range('axial')
-        #print([(round(i[0],3),round(i[2],3)) for i in forces])
-        #print([round(i,3) for i in axial_forces])
-        
-        
-        for i in range(len(axial_forces)):
-            force = axial_forces[i]
-            tpoint = nodes.index(trusses[i].nodeA), nodes.index(trusses[i].nodeB)
-            if nodes[tpoint[0]].damaged(force) or nodes[tpoint[1]].damaged(force):
-                discon.append((i,nodes[tpoint[0]].damaged(force),nodes[tpoint[1]].damaged(force)))
-
-        
+            newpos = vector(nodes[k].pos.x+dispalcements[k][1],nodes[k].pos.y+dispalcements[k][2],0)
+            nodes[k].change_pos(newpos)
 
         self.t+=0.1
         return "success"
@@ -187,15 +182,15 @@ class Structure:
         self.t += dt
         for ball in self.balls:
             if ball.ground_distance(self)!= None:
-                if ball.ground_distance(self)-ball.r < 0.001 :
+                if ball.ground_distance(self)-ball.radius < 0.001 :
                     self.collision = self.t
-                    print('gg',ball.v.mag,self.t)
                     ball.collision(self)
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
                 else:
+                    self.loadid = None
                     ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
                 
-                if ball.ground_distance(self)-ball.r < 0.01:
+                if ball.ground_distance(self)-ball.radius < 0.01:
                     ball.a = vector(0,ball.g,0)+ball.engine(self)-ball.normala(self)
                 
             else:
@@ -203,12 +198,30 @@ class Structure:
 
             ball.v += ball.a*dt
             ball.pos += ball.v*dt
-              
-            
+    def structure_save(self):
+        self.tempnodespos =[0]*len(self.nodes) 
+        for i in range(len(self.nodes)):
+            self.tempnodespos[i] = self.nodes[i].pos
 
+    def structure_reset(self):
+        for i in range(len(self.tempnodespos)):
+            self.nodes[i].pos = self.tempnodespos[i]
+    
+    def check_collapse(self):
+        for truss in self.trusses:
+            if truss.length()>truss.oril+1:
+                print("collapse")
+                self.running = False
+                self.collapse = True
+                self.Bios.append(NodeTruss.Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=(Node(pos=truss.nodeB.pos))))
+    
     def update(self):
         screen = self.screen
-        #self.analyze()
+        if self.running:
+            self.check_collapse()
+            if not self.collapse:
+                self.analyze()
+                time.sleep(0.01)
         self.screen.fill((255,255,255))    
         if self.balls != None:
             self.ball_rolling()    
@@ -221,4 +234,3 @@ class Structure:
                 i.draw_Truss()
         for i in self.balls:
             i.draw_ball()
-        #time.sleep(0.1)

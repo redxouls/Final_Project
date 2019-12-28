@@ -20,16 +20,12 @@ screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
 
 #main_structure.create()
-COs = []
-for i in range(3):
-    COs.append(NodeTruss.Bio(pos=vector(150+i*10, 350+i*100, 0), axis = vector(d, 0, 0),screen = screen,d=d))
 
 while True:
     for event in pygame.event.get():
         #print(event.type)
         if event.type == QUIT:
             main_structure.print_result()
-            print(main_structure.two_end())
             pygame.quit()
             sys.exit()
         if event.type == MOUSEBUTTONUP :
@@ -49,16 +45,37 @@ while True:
             if event.key == K_2:
                 main_structure.mode=1
                 print('mode2')
+            if event.key == K_3:
+                for test in main_structure.Bios:
+                    test.time_lapse()
+                    test.ground_collision()
+                    test.system_check_collision(main_structure.Bios)
+            if event.key == K_LSHIFT or event.key == K_RSHIFT:
+                if not main_structure.first :
+                    main_structure.structure_save()
+                    main_structure.first = True
+                    print("saved")
+                if not main_structure.running:
+                    main_structure.running = True
+                    print("running")
+                else:
+                    main_structure.running = False
+                    print('stop')
+            if event.key == K_4:
+                main_structure.structure_reset()
+                
+
+                
     # Update.
     main_structure.update()
-    '''
-    for test in COs:
-        test.draw_Truss()
-        test.draw_node()
-        test.time_lapse(dt)
-        test.ground_collision()
-        test.system_check_collision(COs)
-    '''               
+
+    if main_structure.collapse:
+        for test in main_structure.Bios:
+            test.ground_collision()
+            test.system_check_collision(main_structure.Bios)
+            test.time_lapse()
+            test.draw_Truss(screen)
+            test.draw_node(screen)
     # Draw.
     pygame.display.flip()
     fpsClock.tick(fps)

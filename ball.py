@@ -9,11 +9,11 @@ from vpython import *
 class Ball:
     def __init__(self,screen):
         self.screen = screen
-        self.r = 20
+        self.radius = 20
         self.g = 9.8
-        self.efficient = -0.1
-        self.colleffi = 1
-        self.power = 80.0
+        self.efficient = 0.01
+        self.colleffi = 0.8
+        self.power = 50.0
         self.v = vector(0,0,0)
         self.pos = vector(120.0,100.0,0)
         self.a = vector(0,self.g,0)
@@ -25,9 +25,8 @@ class Ball:
             return 
     def draw_ball(self):
         screen = self.screen
-        pygame.draw.circle(screen, (123, 127, 255), [int(self.pos.x),int(self.pos.y)], self.r, 0)
+        pygame.draw.circle(screen, (123, 127, 255), [int(self.pos.x),int(self.pos.y)], self.radius, 0)
     def nearest(self,structure):
-        print(structure.roadtrusses)
         for i in range(len(structure.roadtrusses)):
             truss = structure.roadtrusses[i] 
             if self.pos.x>=truss.nodeA.pos.x and self.pos.x<truss.nodeB.pos.x:
@@ -56,11 +55,10 @@ class Ball:
             v2 = vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0) - vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0)
             v2 /= v2.mag
         N = vector(v2.y,-v2.x,0)
-        print(self.v,N)
         if (N.dot(self.v)<0 and v1.dot(N)>0) or (N.dot(self.v)>0 and v1.dot(N)<0):
-            print('flag')
             newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
             self.v = newv*self.colleffi
+            structure.loadid = (structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB))
         else:
             return
     
