@@ -1,15 +1,13 @@
 import sys, pygame, time, copy
 import numpy as np
 from pygame.locals import *
-import NodeTruss, ball
 from anastruct import SystemElements
 from vpython import *
+from ball import *
+from Node import *
+from Truss import *
+from Bio import *
 
-
-
-Node = NodeTruss.Node
-Truss = NodeTruss.Truss
-Ball = ball.Ball
 class Structure:
     def __init__(self,screen):
         self.trusses = []
@@ -153,8 +151,10 @@ class Structure:
             tb=[i.nodeB.pos.x,i.nodeB.pos.y]
             ss.add_element(location=[ta,tb])
         ends = self.two_end()
-        ss.add_support_hinged(ends[0]+1)
-        ss.add_support_hinged(ends[1]+1)
+        ss.add_support_hinged(1)
+        ss.add_support_hinged(2)
+        ss.add_support_hinged(3)
+        ss.add_support_hinged(4)
         #ss.add_support_roll(1,2)
         #ss.add_support_roll(1,2)
         if self.loadid != None:
@@ -213,8 +213,17 @@ class Structure:
                 print("collapse")
                 self.running = False
                 self.collapse = True
-                self.Bios.append(NodeTruss.Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=(Node(pos=truss.nodeB.pos))))
+                truss.collapse = True
+                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=(Node(pos=truss.nodeB.pos))))
     
+    def initail_platform(self):
+        left_nodeA = self.add_node(0,480)
+        left_nodeB = self.add_node(200,480)
+        self.add_truss(left_nodeA,left_nodeB)
+        right_nodeA = self.add_node(1080,480)
+        right_nodeB = self.add_node(1280,480)
+        self.add_truss(right_nodeA,right_nodeB)
+
     def update(self):
         screen = self.screen
         if self.running:
@@ -228,9 +237,10 @@ class Structure:
         for i in self.nodes:
             i.draw_node()
         for i in self.trusses:
-            if i.collided :
+            if i.collided and not i.collapse :
                 i.draw_marked_Truss()
             else:
-                i.draw_Truss()
+                if not i.collapse:
+                    i.draw_Truss()
         for i in self.balls:
             i.draw_ball()

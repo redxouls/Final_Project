@@ -2,7 +2,10 @@ import sys, pygame, structure, copy, time
 from pygame.locals import *
 from anastruct import SystemElements
 from vpython import *
-import NodeTruss
+from Node import *
+from Truss import *
+from Bio import *
+from ball import *
 
 size, m_o, m_c, k_bond = 30, 20, 20, 18600.0    # These numbers are all made up
 d = 2.5*size
@@ -18,7 +21,7 @@ screen = pygame.display.set_mode((width, height))
 # Game loop.
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
-
+main_structure.initail_platform()
 #main_structure.create()
 
 while True:

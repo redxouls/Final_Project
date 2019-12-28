@@ -1,10 +1,10 @@
 import sys, pygame, time
 import numpy as np
 from pygame.locals import *
-import NodeTruss
 from anastruct import SystemElements
 from vpython import *
-
+from Node import *
+from Truss import *
 
 class Ball:
     def __init__(self,screen):
@@ -15,7 +15,7 @@ class Ball:
         self.colleffi = 0.8
         self.power = 50.0
         self.v = vector(0,0,0)
-        self.pos = vector(120.0,100.0,0)
+        self.pos = vector(0,400.0,0)
         self.a = vector(0,self.g,0)
         self.free = True
     def distance(self,*,node=None,truss=None):
