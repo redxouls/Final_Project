@@ -23,9 +23,10 @@ screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
 main_structure.initail_platform()
 #main_structure.create()
-###start 翁
-main_controller = controller.Controller(screen,main_structure.trusses,main_structure.nodes,main_structure.click,main_structure.lastc,main_structure.t,main_structure.balls,main_structure.Bios,main_structure.loadid,main_structure.roadtrusses,main_structure.mode,main_structure.running,main_structure.reset,main_structure.first,main_structure.collapse)
-###end
+######################################
+sturctures_list = [main_structure]
+main_controller = controller.Controller(sturctures_list)
+######################################
 while True:
     for event in pygame.event.get():
         #print(event.type)
