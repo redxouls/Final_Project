@@ -254,13 +254,16 @@ class Structure:
         for nd in self.nodes:
             if (nd.pos.x-x1)*(nd.pos.x-x2)<0 and (nd.pos.y-y1)*(nd.pos.y-y2)<0:
                 dltnode.append(nd)
-                self.nodes.remove(nd)
+                #print(nd.pos)
         for nd in dltnode:
             for tru in self.trusses:
                 if tru.nodeA == nd or tru.nodeB == nd:
                     self.trusses.remove(tru)
+            self.nodes.remove(nd)
+        print(len(self.trusses))
+        dlttruss=[]
         for tru in self.trusses:
-            print(tru.nodeB.pos,tru.nodeA.pos)
+            #print(tru.nodeB.pos,tru.nodeA.pos)
             xpara=(tru.nodeA.pos.x,tru.nodeB.pos.x-tru.nodeA.pos.x)
             ypara=(tru.nodeA.pos.y,tru.nodeB.pos.y-tru.nodeA.pos.y)
             #print(ypara)
@@ -278,4 +281,6 @@ class Structure:
                 if min(y1,y2)<ypara[0]<max(y1,y2) and (0<(x1-xpara[0])/xpara[1]<1 or 0<(x2-xpara[0])/xpara[1]<1):
                     cnt+=1
             if cnt >= 1:
-                self.trusses.remove(tru)
+                dlttruss.append(tru)
+        for tru in dlttruss:
+            self.trusses.remove(tru)

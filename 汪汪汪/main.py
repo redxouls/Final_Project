@@ -41,7 +41,6 @@ while True:
                 main_structure.dltcod[1]=upcod
                 print(main_structure.dltcod)
                 main_structure.delarea()
-                main_structure.dlt=False
 
         if event.type == MOUSEBUTTONDOWN:
             downcod = pygame.mouse.get_pos()
@@ -49,6 +48,9 @@ while True:
                 main_structure.clicked(MOUSEBUTTONDOWN,downcod,event.button)
             if main_structure.dlt and event.button == 3:
                 main_structure.dltcod[0]=downcod
+        if event.type == KEYUP:
+            if event.key == K_d:
+                main_structure.dlt=False
         if event.type == KEYDOWN:
             if event.key == K_d:
                 main_structure.dlt=True

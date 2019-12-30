@@ -7,10 +7,6 @@ from Truss import *
 from Bio import *
 from ball import *
 
-size, m_o, m_c, k_bond = 30, 20, 20, 18600.0    # These numbers are all made up
-d = 2.5*size
-dt = 0.1
-
 pygame.init()
  
 fps = 60
@@ -66,9 +62,6 @@ while True:
                     print('stop')
             if event.key == K_4:
                 main_structure.structure_reset()
-                
-
-                
     # Update.
     main_structure.update()
 
