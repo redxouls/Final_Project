@@ -11,7 +11,7 @@ class Node :
         else:
             self.pos = pos
         self.radius = 10
-        self.maxforce = 100
+        self.maxforce = 0.000000002
         self.screen = screen
     def draw_node(self):
         screen = self.screen
@@ -29,4 +29,6 @@ class Node :
     def to_int(self):
         return int(self.pos.x), int(self.pos.y)
     def damaged(self,force_ext):
+        return self.maxforce < abs(force_ext)
+    def displacing(self,force_ext):
         return self.maxforce < abs(force_ext)

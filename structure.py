@@ -7,6 +7,8 @@ from ball import *
 from Node import *
 from Truss import *
 from Bio import *
+from anastruct.basic import FEMException
+
 
 class Structure:
     def __init__(self,screen):
@@ -198,6 +200,7 @@ class Structure:
 
             ball.v += ball.a*dt
             ball.pos += ball.v*dt
+    
     def structure_save(self):
         self.tempnodespos =[0]*len(self.nodes) 
         for i in range(len(self.nodes)):
@@ -209,7 +212,7 @@ class Structure:
     
     def check_collapse(self):
         for truss in self.trusses:
-            if truss.length()>truss.oril+1:
+            if truss.length()>truss.oril+3:
                 print("collapse")
                 self.running = False
                 self.collapse = True
