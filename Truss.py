@@ -2,7 +2,6 @@ import sys, pygame
 import numpy as np
 from pygame.locals import *
 from vpython import *
-import ball
 from structure import *
 
 class Truss():

@@ -5,7 +5,8 @@ from vpython import *
 from Node import *
 from Truss import *
 from Bio import *
-from ball import *
+from Ball import *
+from Controller import *
 
 pygame.init()
  
@@ -17,58 +18,70 @@ screen = pygame.display.set_mode((width, height))
 # Game loop.
 screen.fill((255,255,255))
 main_structure = structure.Structure(screen)
-main_structure.initail_platform()
+main_controller = Controller(main_structure,screen)
+main_controller.initail_platform()
+
 #main_structure.create()
 
 while True:
+    psedkey=pygame.key.get_pressed()
+    psedmse=pygame.mouse.get_pressed()
+
     for event in pygame.event.get():
-        #print(event.type)
         if event.type == QUIT:
             main_structure.print_result()
             pygame.quit()
             sys.exit()
         if event.type == MOUSEBUTTONUP :
             upcod = pygame.mouse.get_pos() 
-            main_structure.clicked(MOUSEBUTTONUP,upcod,event.button)
+            if not main_controller.dlt:
+                main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
+            if main_controller.dlt and event.button == 3:
+                main_controller.dltcod[1]=upcod
+                print(main_controller.dltcod)
+                main_controller.delarea()
 
         if event.type == MOUSEBUTTONDOWN:
             downcod = pygame.mouse.get_pos()
-            main_structure.clicked(MOUSEBUTTONDOWN,downcod,event.button)
-        
+            if not main_controller.dlt:
+                main_controller.clicked(MOUSEBUTTONDOWN,downcod,event.button)
+            if main_controller.dlt and event.button == 3:
+                main_controller.dltcod[0]=downcod
+        if event.type == KEYUP:
+            if event.key == K_d:
+                main_controller.dlt=False
         if event.type == KEYDOWN:
+            if event.key == K_d:
+                main_controller.dlt=True
             if event.key == K_SPACE:
-                main_structure.add_ball()
+                main_controller.add_ball()
             if event.key == K_1:
-                main_structure.mode=0
+                main_controller.mode=0
                 print('mode1')
             if event.key == K_2:
-                main_structure.mode=1
+                main_controller.mode=1
                 print('mode2')
-            if event.key == K_3:
-                for test in main_structure.Bios:
-                    test.time_lapse()
-                    test.ground_collision()
-                    test.system_check_collision(main_structure.Bios)
             if event.key == K_LSHIFT or event.key == K_RSHIFT:
-                if not main_structure.first :
-                    main_structure.structure_save()
-                    main_structure.first = True
+                if not main_controller.first :
+                    main_controller.structure_save()
+                    main_controller.first = True
                     print("saved")
-                if not main_structure.running:
-                    main_structure.running = True
+                if not main_controller.running:
+                    main_controller.running = True
                     print("running")
                 else:
-                    main_structure.running = False
+                    main_controller.running = False
                     print('stop')
             if event.key == K_4:
-                main_structure.structure_reset()
+                main_controller.structure_reset()
+                
     # Update.
-    main_structure.update()
+    main_controller.update()
 
     if main_structure.collapse:
-        for test in main_structure.Bios:
+        for test in main_controller.Bios:
             test.ground_collision()
-            test.system_check_collision(main_structure.Bios)
+            test.system_check_collision(main_controller.Bios)
             test.time_lapse()
             test.draw_Truss(screen)
             test.draw_node(screen)

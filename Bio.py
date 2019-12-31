@@ -2,7 +2,7 @@ import sys, pygame
 import numpy as np
 from pygame.locals import *
 from vpython import *
-from ball import *
+from Ball import *
 from Node import *
 
 class Bio():

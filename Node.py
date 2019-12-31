@@ -2,7 +2,6 @@ import sys, pygame
 import numpy as np
 from pygame.locals import *
 from vpython import *
-import ball
 
 class Node :
     def __init__(self,x=0,y =0,screen=None,*,pos=None,radius=None):
@@ -22,7 +21,7 @@ class Node :
         return 
     def clicked(self,mouse_pos):
         distance = ((self.pos.x-mouse_pos[0])**2+(self.pos.y-mouse_pos[1])**2)**0.5
-        if distance <= self.radius:
+        if distance <= self.radius+10:
             return True
         else:
             return False
