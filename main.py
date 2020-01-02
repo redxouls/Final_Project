@@ -1,4 +1,4 @@
-import sys, pygame, structure, copy, time
+import sys, pygame, copy, time
 from pygame.locals import *
 from anastruct import SystemElements
 from vpython import *
@@ -17,7 +17,7 @@ width, height = 1280, 960
 screen = pygame.display.set_mode((width, height))
 # Game loop.
 screen.fill((255,255,255))
-main_structure = structure.Structure(screen)
+main_structure = Structure(screen)
 main_controller = Controller(main_structure,screen)
 main_controller.initail_platform()
 

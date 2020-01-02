@@ -2,7 +2,6 @@ import sys, pygame
 import numpy as np
 from pygame.locals import *
 from vpython import *
-from structure import *
 
 class Truss():
     def __init__(self,nodeA=None,nodeB=None,screen=None,*,pos=None,axis=None,radius=None):
