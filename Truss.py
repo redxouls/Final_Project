@@ -19,11 +19,11 @@ class Truss():
         
     def draw_Truss(self):
         screen = self.screen
-        pygame.draw.line(self.screen,(0,0,0), self.nodeA.to_int(), self.nodeB.to_int(), 5)
+        pygame.draw.line(self.screen,(204,102,0), self.nodeA.to_int(), self.nodeB.to_int(), 17)
 
     def draw_marked_Truss(self):
         screen = self.screen
-        pygame.draw.line(self.screen,(0,200,0), self.nodeA.to_int(), self.nodeB.to_int(), 5) 
+        pygame.draw.line(self.screen,(0,0,0), self.nodeA.to_int(), self.nodeB.to_int(), 17) 
 
     def damaged(self,force_ext):
         return self.maxforce>force_ext

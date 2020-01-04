@@ -37,7 +37,6 @@ class Structure:
         self.trusses.append(new_truss)
         if mode==0:
             self.roadtrusses.append(new_truss)
-        #self.Bios.append(NodeTruss.Bio(nodeA=nodeA,nodeB=nodeB,screen=self.screen))
         print(self.Bios)
         return new_truss
 
@@ -107,4 +106,5 @@ class Structure:
 
         self.t+=0.1
         return "success"
+
     

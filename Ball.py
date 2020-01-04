@@ -29,6 +29,8 @@ class Ball:
     def nearest(self,structure):
         for i in range(len(structure.roadtrusses)):
             truss = structure.roadtrusses[i] 
+            if truss.collapse:
+                continue
             if self.pos.x>=truss.nodeA.pos.x and self.pos.x<truss.nodeB.pos.x:
                 return i
             if self.pos.x<truss.nodeA.pos.x and self.pos.x>=truss.nodeB.pos.x:

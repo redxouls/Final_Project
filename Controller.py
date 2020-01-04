@@ -11,7 +11,7 @@ from Structure import *
 
 class Controller():
     def __init__(self,structure,screen):
-        self.sturcture =  structure
+        self.sturcture = structure
         self.screen = screen
         self.balls = []
         self.t = 0
@@ -21,7 +21,6 @@ class Controller():
         self.running = False
         self.first = False
         self.Bios = []
-        self.collapse = False
     def add_ball(self):
         new_ball = Ball(self.screen)
         self.balls.append(new_ball)
@@ -99,7 +98,8 @@ class Controller():
                 self.running = False
                 structure.collapse = True
                 truss.collapse = True
-                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=(Node(pos=truss.nodeB.pos))))
+                nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
+                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
     
     def initail_platform(self):
         structure = self.sturcture
