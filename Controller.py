@@ -210,6 +210,15 @@ class Controller():
         self.dlttruss=[]
 
     def update(self):
+        structure  = self.structure
+        if self.structure.unstable:
+            for truss in structure.trusses:
+                truss.collapse = True
+                nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
+                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
+                for truss in structure.roadtrusses:
+                    truss.collapse = True
+            self.structure.unstable = False
         structure = self.structure
         screen = self.screen
         if self.running and  not self.structure.collapse:

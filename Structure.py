@@ -25,6 +25,7 @@ class Structure:
         self.dltnode=[]
         self.dlttruss=[]
         self.tmpc=[False,(0,0),120]
+        self.unstable = False
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -75,39 +76,43 @@ class Structure:
             return leftid,rightid
     
     def analyze(self):
-        if len(self.nodes)<1:
-            return None
-        nodes = self.nodes
-        trusses = self.trusses
-        ss = SystemElements(EA=15000, EI=5000)
-        for i in trusses:
-            ta=[i.nodeA.pos.x,i.nodeA.pos.y]
-            tb=[i.nodeB.pos.x,i.nodeB.pos.y]
-            ss.add_element(location=[ta,tb])
-        ends = self.two_end()
-        ss.add_support_hinged(1)
-        ss.add_support_hinged(2)
-        ss.add_support_hinged(3)
-        ss.add_support_hinged(4)
-        #ss.add_support_roll(1,2)
-        #ss.add_support_roll(1,2)
-        if self.loadid != None:
-            print(self.loadid)
-            for i in self.loadid:
-                ss.point_load(i+1,Fy=30)
-                #ss.show_structure()
-            
-        else:
-            return
-        ss.solve()
-        #ss.show_structure()
-        #ss.show_axial_force()
-        #ss.show_displacement()
-        dispalcements = ss.get_node_displacements()
-        for k in range(len(nodes)):
-            self.print_result()
-            newpos = vector(nodes[k].pos.x+dispalcements[k][1],nodes[k].pos.y+dispalcements[k][2],0)
-            nodes[k].change_pos(newpos)
+        try:
+            if len(self.nodes)<1:
+                return None
+            nodes = self.nodes
+            trusses = self.trusses
+            ss = SystemElements(EA=15000, EI=5000)
+            for i in trusses:
+                ta=[i.nodeA.pos.x,i.nodeA.pos.y]
+                tb=[i.nodeB.pos.x,i.nodeB.pos.y]
+                ss.add_element(location=[ta,tb])
+            ends = self.two_end()
+            ss.add_support_hinged(1)
+            ss.add_support_hinged(2)
+            ss.add_support_hinged(3)
+            ss.add_support_hinged(4)
+            #ss.add_support_roll(1,2)
+            #ss.add_support_roll(1,2)
+            if self.loadid != None:
+                print(self.loadid)
+                for i in self.loadid:
+                    ss.point_load(i+1,Fy=30)
+                    #ss.show_structure()
+                
+            else:
+                return
+            ss.solve()
+            #ss.show_structure()
+            #ss.show_axial_force()
+            #ss.show_displacement()
+            dispalcements = ss.get_node_displacements()
+            for k in range(len(nodes)):
+                self.print_result()
+                newpos = vector(nodes[k].pos.x+dispalcements[k][1],nodes[k].pos.y+dispalcements[k][2],0)
+                nodes[k].change_pos(newpos)
 
-        self.t+=0.1
-        return "success"
+            self.t+=0.1
+            return "success"
+        except:
+            self.unstable = True
+            self.collapse = True
