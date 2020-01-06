@@ -49,6 +49,9 @@ class Controller():
         self.mode_font = pygame.font.SysFont('Comic Sans MS', 35)
         self.running_mode = 'Stop'
         self.running_font = pygame.font.SysFont('Comic Sans MS', 35)
+        self.fail_font = pygame.font.SysFont('Comic Sans MS', 80) 
+        self.fail_textsurface = self.fail_font.render('You lose! Motherfucker', False, (255, 0, 0))
+        self.fail_rect = self.fail_textsurface.get_rect()
     def add_ball(self):
         new_ball = Ball(self.screen)
         self.balls.append(new_ball)
@@ -268,7 +271,9 @@ class Controller():
             pygame.draw.circle(screen,(230,230,230),self.tmpc[1],self.tmpc[2],1)
             for i in range(12):
                 pygame.draw.circle(screen,(230,230,230),(int(self.tmpc[1][0]+self.tmpc[2]*cos(pi*i/6)),int(self.tmpc[1][1]+self.tmpc[2]*sin(pi*i/6))),5)
-
+        if structure.collapse:
+            self.screen.blit(self.fail_textsurface,(1280/2-self.fail_rect[2]/2,960/6))
+            
     def game_start_interface(self):
         path1 = os.path.join(self.dir,'start_button.png')
         path2 = os.path.join(self.dir,'exit_button.png')
