@@ -11,6 +11,7 @@ from Structure import *
 
 class Controller():
     def __init__(self,structure,screen):
+        self.win = False
         self.di = os.getcwd()
         print(self.di)
         self.dir = os.path.join(self.di,'images')
@@ -40,7 +41,15 @@ class Controller():
         self.dltnode=[]
         self.dlttruss=[]
         self.tmpc=[False,(0,0),200]
-
+        self.win = False
+        path8 = os.path.join(self.dir,'car.png')
+        self.origin_car = pygame.image.load(path8).convert_alpha()
+        self.car_size = (80,60)
+        self.car = pygame.transform.scale(self.origin_car,self.car_size)
+        self.display_mode = 'Road'
+        self.mode_font = pygame.font.SysFont('Comic Sans MS', 35)
+        self.running_mode = 'Stop'
+        self.running_font = pygame.font.SysFont('Comic Sans MS', 35)
     def add_ball(self):
         new_ball = Ball(self.screen)
         self.balls.append(new_ball)
@@ -104,7 +113,8 @@ class Controller():
                 
             else:
                 ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
-
+            if ball.pos.x >= 1280 and ball.pos.y<700:
+                self.win = True
             ball.v += ball.a*dt
             ball.pos += ball.v*dt
 
@@ -117,6 +127,8 @@ class Controller():
     def structure_reset(self):
         structure = self.structure
         structure.collapse = False
+        self.balls  = []
+        self.Bios = []
         for i in range(len(structure.tempnodespos)):
             structure.nodes[i].pos = structure.tempnodespos[i]
         for i in range(len(structure.trusses)):
@@ -124,22 +136,29 @@ class Controller():
     
     def check_collapse(self):
         structure = self.structure
+        collpase = False
         for truss in structure.trusses:
-            if truss.length()>truss.oril+1:
-                print("collapse")
-                self.running = False
+            if truss.length()>truss.oril+10:
+                collpase  = True
+                self.running = True
                 structure.collapse = True
+                truss.collapse = True
+                #nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
+                #self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
+        if collpase:
+            for truss in structure.trusses:
                 truss.collapse = True
                 nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
                 self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
-    
-    def initail_platform(self):
+                for truss in structure.roadtrusses:
+                    truss.collapse = True
+    def initial_platform(self):
         structure = self.structure
-        left_nodeA = structure.add_node(0,480)
-        left_nodeB = structure.add_node(200,480)
+        left_nodeA = structure.add_node(0,700)
+        left_nodeB = structure.add_node(200,700)
         structure.add_truss(left_nodeA,left_nodeB,0)
-        right_nodeA = structure.add_node(1080,480)
-        right_nodeB = structure.add_node(1280,480)
+        right_nodeA = structure.add_node(1080,700)
+        right_nodeB = structure.add_node(1280,700)
         structure.add_truss(right_nodeA,right_nodeB,0)
 
     def delarea(self):
@@ -193,16 +212,33 @@ class Controller():
     def update(self):
         structure = self.structure
         screen = self.screen
-        if self.running:
+        if self.running and  not self.structure.collapse:
             self.check_collapse()
             if not structure.collapse:
                 structure.analyze()
                 time.sleep(0.01)
         #----------------------------------
         self.screen.blit(self.game_bg,(0,0))
+        if self.mode == 0:
+            self.display_mode = 'Road'
+        elif self.mode == 1:
+            self.display_mode = 'Wood'
+        if self.running:
+            self.running_mode = 'Running'
+        else:
+            self.running_mode = "Stop"
+        self.mode_textsurface = self.mode_font.render('Mode = %s' %self.display_mode, False, (255, 255, 255))
+        self.mode_rect = self.mode_textsurface.get_rect()
+        self.screen.blit(self.mode_textsurface,(50,80))
+        self.running_textsurface = self.running_font.render('State = %s' %self.running_mode, False, (255, 255, 255))
+        self.running_rect = self.running_textsurface.get_rect()
+        self.screen.blit(self.running_textsurface,(50,150))
         #----------------------------
         if self.balls != None:
             self.ball_rolling()
+            for ball in self.balls:
+                ball_pos = (ball.pos.x-40,ball.pos.y-35)
+                self.screen.blit(self.car,ball_pos)            
         for i in structure.nodes:
             if i in self.dltnode:
                 i.draw_node(True)
@@ -221,8 +257,6 @@ class Controller():
                         i.draw_Truss(True)        
                     else:
                         i.draw_Truss(False)
-        for i in self.balls:
-            i.draw_ball()
         if self.tmpc[0]:
             pygame.draw.circle(screen,(230,230,230),self.tmpc[1],self.tmpc[2],1)
             for i in range(12):
@@ -311,6 +345,12 @@ class Controller():
     def game_restart(self):
         new_structure = Structure(self.screen)
         self.__init__(new_structure,self.screen)
-        self.structure = new_structure
-        self.initail_platform()
-        self.structure.print_result()        
+    def show_win(self):
+        self.win_font = pygame.font.SysFont('Comic Sans MS', 108)
+        self.win_textsurface = self.win_font.render('You just won! ', True, (255, 0, 0))
+        self.win_rect = self.win_textsurface.get_rect()
+        self.note_font = pygame.font.SysFont('Comic Sans MS',50)
+        self.note_textsurface = self.note_font.render('PRESS A BUTTON BACK TO MENU!',True,(0,0,0))
+        self.note_rect = self.note_textsurface.get_rect()
+        self.screen.blit(self.win_textsurface,(1280/2-self.win_rect[2]/2,960/8))
+        self.screen.blit(self.note_textsurface,(1280/2-self.note_rect[2]/2,600))

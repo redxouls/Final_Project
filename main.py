@@ -40,9 +40,10 @@ while True:
                     pygame.quit()
                     sys.exit()
     #in the game
-    if  main_controller.game_running and not main_controller.esc_or_not:
+    if  main_controller.game_running and not main_controller.esc_or_not and not main_controller.win:
         if main_controller.first_time:
-            main_controller.initail_platform()
+            main_controller.initial_platform()
+            main_controller.first_time = False
         
         psedkey=pygame.key.get_pressed()
         psedmse=pygame.mouse.get_pressed()
@@ -60,6 +61,7 @@ while True:
                         main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
                     if main_controller.dlt and event.button == 3:
                         main_controller.dltcod[1]=upcod
+                        print(main_controller.dltcod)
                         main_controller.delarea()
                 main_controller.first_click = False
 
@@ -108,7 +110,16 @@ while True:
         
         if not main_controller.esc_or_not:
             main_controller.update()
+    if main_controller.game_running and not main_controller.esc_or_not and main_controller.win:
+        main_controller.show_win()
         
+        main_controller.running = False
+       
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                main_controller.win = False
+                main_controller.game_running = False
+                main_controller.game_restart()
     ##esc(in the game)
     if main_controller.game_running and main_controller.esc_or_not:  
         for event in pygame.event.get():
@@ -122,7 +133,6 @@ while True:
                     main_controller.esc_or_not = False
                     #####need to be fixed
                     main_controller.game_restart()
-                    main_controller.initail_platform()
                     ######
                 if main_controller.click_esc_resume_button(downcod):
                     main_controller.first_click = True
