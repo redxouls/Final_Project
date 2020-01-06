@@ -126,6 +126,7 @@ class Controller():
 
     def structure_reset(self):
         structure = self.structure
+        structure.loadid = None
         structure.collapse = False
         self.balls  = []
         self.Bios = []
@@ -143,8 +144,6 @@ class Controller():
                 self.running = True
                 structure.collapse = True
                 truss.collapse = True
-                #nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
-                #self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
         if collpase:
             for truss in structure.trusses:
                 truss.collapse = True
@@ -166,7 +165,6 @@ class Controller():
         x2=self.dltcod[1][0]
         y1=self.dltcod[0][1]
         y2=self.dltcod[1][1]
-        #dltnode=[]
         structure = self.structure
         for nd in structure.nodes:
             if structure.nodes.index(nd)<4:
@@ -203,6 +201,8 @@ class Controller():
             structure.nodes.remove(nd)
         for tru in self.dlttruss:
             structure.trusses.remove(tru)
+            if tru in self.structure.roadtrusses:
+                self.structure.roadtrusses.remove(tru)
         self.recov()
 
     def recov(self):

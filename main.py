@@ -61,7 +61,6 @@ while True:
                         main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
                     if main_controller.dlt and event.button == 3:
                         main_controller.dltcod[1]=upcod
-                        print(main_controller.dltcod)
                         main_controller.delarea()
                 main_controller.first_click = False
 
@@ -83,20 +82,15 @@ while True:
                     main_controller.add_ball()
                 if event.key == K_1:
                     main_controller.mode=0
-                    print('mode1')
                 if event.key == K_2:
                     main_controller.mode=1
-                    print('mode2')
                 if event.key == K_LSHIFT or event.key == K_RSHIFT:
                     if not main_controller.running:
                         main_controller.structure_save()
                         main_controller.first = True
-                        print("saved")
                         main_controller.running = True
-                        print("running")
                     else:
                         main_controller.running = False
-                        print('stop')
                 if event.key == K_4:
                     main_controller.structure_reset()
                 if event.key == K_ESCAPE:
