@@ -154,15 +154,12 @@ class Controller():
                 continue
             if (nd.pos.x-x1)*(nd.pos.x-x2)<0 and (nd.pos.y-y1)*(nd.pos.y-y2)<0:
                 self.dltnode.append(nd)
-                #print(nd.pos)
         
         for tru in structure.trusses:
             if structure.trusses.index(tru)<2:
                 continue
-            #print(tru.nodeB.pos,tru.nodeA.pos)
             xpara=(tru.nodeA.pos.x,tru.nodeB.pos.x-tru.nodeA.pos.x)
             ypara=(tru.nodeA.pos.y,tru.nodeB.pos.y-tru.nodeA.pos.y)
-            #print(ypara)
             cnt=0
             if min(x1,x2)<tru.nodeA.pos.x<max(x1,x2) and min(x1,x2)<tru.nodeB.pos.x<max(x1,x2) and min(y1,y2)<tru.nodeA.pos.y<max(y1,y2) and min(y1,y2)<tru.nodeB.pos.y<max(y1,y2):
                 cnt+=1
@@ -314,6 +311,6 @@ class Controller():
     def game_restart(self):
         new_structure = Structure(self.screen)
         self.__init__(new_structure,self.screen)
-        new_structure.print_result()
         self.structure = new_structure
-        
+        self.initail_platform()
+        self.structure.print_result()        

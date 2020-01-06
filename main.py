@@ -60,7 +60,6 @@ while True:
                         main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
                     if main_controller.dlt and event.button == 3:
                         main_controller.dltcod[1]=upcod
-                        print(main_controller.dltcod)
                         main_controller.delarea()
                 main_controller.first_click = False
 
