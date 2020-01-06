@@ -20,7 +20,11 @@ class Structure:
         self.loadid = None
         self.roadtrusses=[]
         self.collapse = False
-        
+        self.dlt=False
+        self.dltcod=[(0,0),(0,0)]
+        self.dltnode=[]
+        self.dlttruss=[]
+        self.tmpc=[False,(0,0),120]
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -106,5 +110,3 @@ class Structure:
 
         self.t+=0.1
         return "success"
-
-    
