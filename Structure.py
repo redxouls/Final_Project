@@ -107,7 +107,6 @@ class Structure:
             #ss.show_displacement()
             dispalcements = ss.get_node_displacements()
             for k in range(len(nodes)):
-                self.print_result()
                 newpos = vector(nodes[k].pos.x+dispalcements[k][1],nodes[k].pos.y+dispalcements[k][2],0)
                 nodes[k].change_pos(newpos)
 

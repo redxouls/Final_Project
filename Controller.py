@@ -13,7 +13,6 @@ class Controller():
     def __init__(self,structure,screen):
         self.win = False
         self.di = os.getcwd()
-        print(self.di)
         self.dir = os.path.join(self.di,'images')
         path10 = os.path.join(self.dir,'esc_bg2.png')
         self.background_size = (1280,960)
@@ -83,7 +82,6 @@ class Controller():
             self.tmpc[1]=(mouse_pos[0],mouse_pos[1])
         lastc = len(nodes)-1
         if event_button == 3 and not self.click:
-            print("r")
             self.click = True
             self.lastc = len(nodes)-1
         if event_type == MOUSEBUTTONUP and self.click:
