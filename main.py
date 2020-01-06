@@ -54,8 +54,8 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.type == MOUSEBUTTONUP :
+                main_controller.tmpc[0]=False
                 if not main_controller.first_click :
-                    main_controller.tmpc[0]=False
                     upcod = pygame.mouse.get_pos() 
                     if not main_controller.dlt:
                         main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
