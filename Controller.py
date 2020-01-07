@@ -127,6 +127,8 @@ class Controller():
 
     def structure_reset(self):
         structure = self.structure
+        if structure.tempnodespos == []:
+            return
         structure.loadid = None
         structure.collapse = False
         self.balls  = []

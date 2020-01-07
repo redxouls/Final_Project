@@ -26,6 +26,7 @@ class Structure:
         self.dlttruss=[]
         self.tmpc=[False,(0,0),120]
         self.unstable = False
+        self.tempnodespos = []
     def add(self,newtruss=None,newnode=None):
         if newtruss!= None:
             self.trusses.append(newtruss)
@@ -33,11 +34,15 @@ class Structure:
             self.trusses.append(newnode)
     
     def add_node(self,x,y):
+        if len(self.trusses) >15:
+            return
         new_node = Node(x=int(x),y=int(y),screen=self.screen)
         self.nodes.append(new_node)
         return new_node
     
     def add_truss(self,nodeA,nodeB,mode):
+        if len(self.trusses) >15:
+            return
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
         if mode==0:
