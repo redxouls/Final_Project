@@ -10,12 +10,12 @@ class Ball:
     def __init__(self,screen):
         self.screen = screen
         self.radius = 20
-        self.g = 9.8
+        self.g = 20
         self.efficient = 0.1
         self.colleffi = 0.8
         self.power = 50.0
         self.v = vector(0,0,0)
-        self.pos = vector(0,670.0,0)
+        self.pos = vector(0,679.0,0)
         self.a = vector(0,self.g,0)
         self.free = True
     def distance(self,*,node=None,truss=None):
