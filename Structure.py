@@ -10,6 +10,7 @@ from Bio import *
 
 class Structure:
     def __init__(self,screen):
+        self.truss_limit = 20
         self.trusses = []
         self.nodes = []
         self.click = False
@@ -34,14 +35,14 @@ class Structure:
             self.trusses.append(newnode)
     
     def add_node(self,x,y):
-        if len(self.trusses) >20:
+        if len(self.trusses)> self.truss_limit +1 :
             return
         new_node = Node(x=int(x),y=int(y),screen=self.screen)
         self.nodes.append(new_node)
         return new_node
     
     def add_truss(self,nodeA,nodeB,mode):
-        if len(self.trusses) >20:
+        if len(self.trusses) > self.truss_limit+1 :
             return
         new_truss = Truss(nodeA,nodeB,self.screen)
         self.trusses.append(new_truss)
@@ -112,7 +113,7 @@ class Structure:
             #ss.show_displacement()
             dispalcements = ss.get_node_displacements()
             for k in range(len(nodes)):
-                newpos = vector(nodes[k].pos.x+dispalcements[k][1],nodes[k].pos.y+dispalcements[k][2],0)
+                newpos = vector(nodes[k].pos.x+dispalcements[k][1]*0.1,nodes[k].pos.y+dispalcements[k][2]*0.1,0)
                 nodes[k].change_pos(newpos)
 
             self.t+=0.1

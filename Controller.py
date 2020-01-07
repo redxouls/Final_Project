@@ -34,6 +34,7 @@ class Controller():
         self.first_click = True
         self.esc_or_not = False
         #
+        self.lastc = 0
         self.click = False
         self.dlt=False
         self.dltcod=[(0,0),(0,0)]
@@ -50,8 +51,9 @@ class Controller():
         self.running_mode = 'Stop'
         self.running_font = pygame.font.SysFont('Comic Sans MS', 35)
         self.fail_font = pygame.font.SysFont('Comic Sans MS', 80) 
-        self.fail_textsurface = self.fail_font.render('You lose! Motherfucker', False, (255, 0, 0))
+        self.fail_textsurface = self.fail_font.render('You lose! Try Again!', False, (255, 0, 0))
         self.fail_rect = self.fail_textsurface.get_rect()
+        self.limit_font = pygame.font.SysFont('Comic Sans MS',35)
     def add_ball(self):
         new_ball = Ball(self.screen)
         self.balls.append(new_ball)
@@ -83,13 +85,16 @@ class Controller():
         if event_type == MOUSEBUTTONDOWN:
             self.tmpc[0]=True
             self.tmpc[1]=(mouse_pos[0],mouse_pos[1])
-        lastc = len(nodes)-1
-        if event_button == 3 and not self.click:
-            self.click = True
-            self.lastc = len(nodes)-1
+        
+            if event_button == 3 and not self.click:
+                self.click = True
+                self.lastc = len(nodes)-1
+        #lastc = len(nodes)-1
         if event_type == MOUSEBUTTONUP and self.click:
             if (nodes[self.lastc].pos.x-structure.nodes[-1].pos.x)**2+(nodes[self.lastc].pos.y-structure.nodes[-1].pos.y)**2>self.tmpc[2]**2:
                 structure.nodes.pop()
+                self.lastc = 0
+                self.click = False
                 return
             structure.add_truss(nodes[self.lastc],nodes[-1],self.mode)
             self.click = False
@@ -109,7 +114,7 @@ class Controller():
                     structure.loadid = None
                     ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
                 
-                if ball.ground_distance(structure)-ball.radius < 0.01:
+                if ball.ground_distance(structure)-ball.radius < 0.1:
                     ball.a = vector(0,ball.g,0)+ball.engine(structure)-ball.normala(structure)
                 
             else:
@@ -142,7 +147,7 @@ class Controller():
         structure = self.structure
         collpase = False
         for truss in structure.trusses:
-            if truss.length()>truss.oril+10:
+            if truss.length()>truss.oril+3:
                 collpase  = True
                 self.running = True
                 structure.collapse = True
@@ -245,6 +250,10 @@ class Controller():
         self.running_textsurface = self.running_font.render('State = %s' %self.running_mode, False, (255, 255, 255))
         self.running_rect = self.running_textsurface.get_rect()
         self.screen.blit(self.running_textsurface,(50,150))
+        self.limit_textsurface = self.limit_font.render('%d trusses remaining' %(2+self.structure.truss_limit-len(self.structure.trusses)), True, (255, 255, 255))
+        self.limit_rect = self.limit_textsurface.get_rect()
+        self.limit_topleft = (1200-self.limit_rect[2],80)
+        self.screen.blit(self.limit_textsurface,self.limit_topleft)
         #----------------------------
         if self.balls != None:
             self.ball_rolling()
