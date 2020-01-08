@@ -11,7 +11,7 @@ class Ball:
         self.screen = screen
         self.radius = 20
         self.g = 15
-        self.efficient = 0.01
+        self.efficient = 0.05
         self.colleffi = 0.8
         self.power = 70.0
         self.v = vector(0,0,0)

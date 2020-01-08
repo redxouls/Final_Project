@@ -140,6 +140,7 @@ while True:
             test.time_lapse()
             test.draw_Truss(screen)
             test.draw_node(screen)
+            
     # Draw.
     #if main_controller.game_running:
     pygame.display.flip()

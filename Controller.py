@@ -119,12 +119,14 @@ class Controller():
                 
             else:
                 ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
-            if ball.pos.x >= 1280 and ball.pos.y<700:
+            if ball.pos.x >= 1280 and ball.pos.y<700 and self.running:
                 self.win = True
             ball.v += ball.a*dt
             ball.pos += ball.v*dt
 
     def structure_save(self):
+        if self.structure.collapse:
+            return
         structure = self.structure
         structure.tempnodespos =[0]*len(structure.nodes) 
         for i in range(len(structure.nodes)):
@@ -147,11 +149,15 @@ class Controller():
         structure = self.structure
         collpase = False
         for truss in structure.trusses:
-            if truss.length()>truss.oril+3:
+            if truss.length()>truss.oril+1:
                 collpase  = True
                 self.running = True
                 structure.collapse = True
                 truss.collapse = True
+                '''
+                nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
+                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
+                '''
         if collpase:
             for truss in structure.trusses:
                 truss.collapse = True
@@ -159,6 +165,7 @@ class Controller():
                 self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
                 for truss in structure.roadtrusses:
                     truss.collapse = True
+
     def initial_platform(self):
         structure = self.structure
         left_nodeA = structure.add_node(0,700)
