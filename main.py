@@ -47,7 +47,9 @@ while True:
         
         psedkey=pygame.key.get_pressed()
         psedmse=pygame.mouse.get_pressed()
-
+        if main_controller.alt[0] and psedmse[2]:
+            if main_controller.altednode != -1:
+                main_controller.mvnode(pygame.mouse.get_pos())
         for event in pygame.event.get():
             if event.type == QUIT:
                 main_controller.structure.print_result()
@@ -57,7 +59,7 @@ while True:
                 main_controller.tmpc[0]=False
                 if not main_controller.first_click :
                     upcod = pygame.mouse.get_pos() 
-                    if not main_controller.dlt:
+                    if not (main_controller.dlt or main_controller.alt[0]):
                         main_controller.clicked(MOUSEBUTTONUP,upcod,event.button)
                     if main_controller.dlt and event.button == 3:
                         main_controller.dltcod[1]=upcod
@@ -66,13 +68,17 @@ while True:
 
             if event.type == MOUSEBUTTONDOWN:
                 downcod = pygame.mouse.get_pos()
-                if not main_controller.dlt:
+                if not (main_controller.dlt or main_controller.alt[0]):
                     main_controller.clicked(MOUSEBUTTONDOWN,downcod,event.button)
                 if main_controller.dlt and event.button == 3:
                     main_controller.dltcod[0]=downcod
+                if main_controller.alt[0]:
+                    main_controller.altednode = main_controller.findnode(downcod)
             if event.type == KEYUP:
                 if event.key == K_d:
                     main_controller.dlt=False
+                if event.key == K_a:
+                    main_controller.alt[0] =False
             if event.type == KEYDOWN:
                 if event.key == K_d:
                     main_controller.dltnode=[]
@@ -99,7 +105,8 @@ while True:
                     main_controller.clear()
                 if event.key == K_e:
                     main_controller.recov()
-
+                if event.key == K_a:
+                    main_controller.alt[0] = True
         main_controller.first_time = False
         
         if not main_controller.esc_or_not:

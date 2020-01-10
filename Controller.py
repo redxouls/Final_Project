@@ -42,6 +42,9 @@ class Controller():
         self.dlttruss=[]
         self.tmpc=[False,(0,0),200]
         self.win = False
+        self.altednode = -1
+        self.alt = [False,False]
+        self.reltruss=[]
         path8 = os.path.join(self.dir,'car.png')
         self.origin_car = pygame.image.load(path8).convert_alpha()
         self.car_size = (80,60)
@@ -384,3 +387,25 @@ class Controller():
         self.note_rect = self.note_textsurface.get_rect()
         self.screen.blit(self.win_textsurface,(1280/2-self.win_rect[2]/2,960/8))
         self.screen.blit(self.note_textsurface,(1280/2-self.note_rect[2]/2,600))
+    def findnode(self,mpos):
+        structure = self.structure
+        self.reltruss = []
+        nid = -1
+        screen,nodes,click,trusses = structure.screen, structure.nodes, self.click, structure.trusses
+        for i in range(len(nodes)):
+            check = nodes[i]
+            if check.clicked(mpos):
+                nid=i
+                break
+        for tru in trusses:
+            if tru.nodeA == nodes[nid] or tru.nodeB == nodes[nid]:
+                self.reltruss.append(tru)
+        return nid
+    def mvnode(self,mpos):
+        structure = self.structure
+        screen,nodes,click,trusses = structure.screen, structure.nodes, self.click, structure.trusses
+        npos = vector(mpos[0],mpos[1],0)
+        for tru in self.reltruss:
+            if mag(npos-tru.nodeA.pos) > self.tmpc[2] or mag(npos-tru.nodeB.pos) > self.tmpc[2]:
+                return
+        nodes[self.altednode].pos = npos
