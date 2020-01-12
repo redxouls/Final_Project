@@ -1,4 +1,4 @@
-import sys, pygame, time, copy
+import sys, pygame, time, copy, json
 import numpy as np
 from pygame.locals import *
 from anastruct import SystemElements
@@ -18,7 +18,7 @@ class Structure:
         self.screen = screen
         self.t = 0
         self.Bios = []
-        self.loadid = None
+        self.loadid = []
         self.roadtrusses=[]
         self.collapse = False
         self.dlt=False
@@ -28,12 +28,7 @@ class Structure:
         self.tmpc=[False,(0,0),120]
         self.unstable = False
         self.tempnodespos = []
-    def add(self,newtruss=None,newnode=None):
-        if newtruss!= None:
-            self.trusses.append(newtruss)
-        if newnode!= None:
-            self.trusses.append(newnode)
-    
+
     def add_node(self,x,y):
         if len(self.trusses)> self.truss_limit +1 :
             return
@@ -98,12 +93,13 @@ class Structure:
             ss.add_support_hinged(4)
             #ss.add_support_roll(1,2)
             #ss.add_support_roll(1,2)
-            if self.loadid != None:
-                print(self.loadid)
-                for i in self.loadid:
-                    ss.point_load(i+1,Fy=30)
+            count = 0
+            for i in self.loadid:
+                for index in i:
+                    count +=1
+                    ss.point_load(index+1,Fy=30)
                     #ss.show_structure()
-            else:
+            if count == 0 :
                 return
             ss.solve()
             #ss.show_structure()
@@ -125,3 +121,39 @@ class Structure:
             truss.oril = truss.length()
         for truss in self.roadtrusses:
             truss.oril = truss.length()
+    
+    def output(self):
+        data = {'nodes':[], 'trusses':[], 'roadtrusses':[]}
+        for i in self.nodes:
+            pos = (i.pos.x,i.pos.y)
+            data['nodes'].append(pos)
+        for i in self.trusses:
+            index = (self.nodes.index(i.nodeA), self.nodes.index(i.nodeB))
+            data['trusses'].append(index)
+        for i in self.roadtrusses:
+            index = (self.nodes.index(i.nodeA), self.nodes.index(i.nodeB))
+            data['roadtrusses'].append(index)
+        filename = input("Please enter a filename: ")
+        with open(filename,'w') as f:
+            f.write(json.dumps(data))
+        print('successfully saved')
+
+    def load(self):
+        filename = input("Fileanamse: ")
+        data = {}
+        try:
+            with open(filename,'r') as f:
+                data = json.loads(f.read())
+            self.nodes = []
+            self.trusses = []
+            self.roadtrusses = []
+            for cod in data['nodes']:
+                self.add_node(cod[0],cod[1])
+            for link in data['trusses']:
+                self.add_truss(self.nodes[link[0]],self.nodes[link[1]],1)
+            for link in data['roadtrusses']:
+                self.add_truss(self.nodes[link[0]],self.nodes[link[1]],0)
+            print('successfully load',data)
+        except:
+            print('File Not Found!!')
+        

@@ -1,4 +1,4 @@
-import sys, pygame, time, copy, os
+import sys, pygame, time, copy, os, json
 import numpy as np
 from pygame.locals import *
 from anastruct import SystemElements
@@ -59,7 +59,8 @@ class Controller():
         self.limit_font = pygame.font.SysFont('Comic Sans MS',35)
         self.car_position = vector(0,0,0)
     def add_ball(self):
-        new_ball = Ball(self.screen,self.car_position)
+        new_ball = Ball(self.screen,len(self.balls),self.car_position)
+        self.structure.loadid.append([])
         self.balls.append(new_ball)
 
     def clicked(self,event_type,mouse_pos,event_button):
@@ -113,13 +114,13 @@ class Controller():
             if ball.ground_distance(structure)!= None:
                 if ball.ground_distance(structure)-ball.radius < 0.001 :
                     structure.collision = self.t
-                    ball.collision(structure)
+                    ball.collision(structure,self)
                     ball.a = vector(0,ball.g,0)+ball.engine(structure)-ball.normala(structure)
                 else:
-                    structure.loadid = None
+                    structure.loadid[ball.label] = []
                     ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
                 
-                if ball.ground_distance(structure)-ball.radius < 0.1:
+                if ball.ground_distance(structure)-ball.radius < 1:
                     ball.a = vector(0,ball.g,0)+ball.engine(structure)-ball.normala(structure)
                 
             else:
@@ -139,9 +140,9 @@ class Controller():
 
     def structure_reset(self):
         structure = self.structure
-        if structure.tempnodespos == []:
+        if structure.tempnodespos == [] or len(structure.tempnodespos)!=len(structure.nodes):
             return
-        structure.loadid = None
+        structure.loadid = []
         structure.collapse = False
         self.running = False
         self.balls  = []
@@ -156,7 +157,7 @@ class Controller():
         structure = self.structure
         collpase = False
         for truss in structure.trusses:
-            if truss.length()>truss.oril+1:
+            if truss.length()>truss.oril+3:
                 collpase  = True
                 self.running = True
                 structure.collapse = True
@@ -173,9 +174,9 @@ class Controller():
             for truss in structure.roadtrusses:
                 truss.collapse = True
 
-    def initial_platform(self,id):
+    def initial_platform(self,mapid):
         structure = self.structure
-        if id == 1:
+        if mapid == 1:
             self.car_position = vector(0,680,0)
             structure.truss_limit = 25
             left_nodeA = structure.add_node(0,700)
@@ -185,7 +186,7 @@ class Controller():
             right_nodeB = structure.add_node(1280,200)
             structure.add_truss(right_nodeA,right_nodeB,0)
             return
-        if id == 2:
+        if mapid == 2:
             self.car_position = vector(0,180,0)
             structure.truss_limit = 25
             left_nodeA = structure.add_node(0,200)
@@ -195,7 +196,7 @@ class Controller():
             right_nodeB = structure.add_node(1280,700)
             structure.add_truss(right_nodeA,right_nodeB,0)
             return
-        if id ==3:
+        if mapid ==3:
             left_nodeA = structure.add_node(0,700)
             left_nodeB = structure.add_node(200,700)
             structure.add_truss(left_nodeA,left_nodeB,0)
@@ -435,3 +436,6 @@ class Controller():
             if mag(npos-tru.nodeA.pos) > self.tmpc[2] or mag(npos-tru.nodeB.pos) > self.tmpc[2]:
                 return
         nodes[self.altednode].pos = npos
+    
+    
+            

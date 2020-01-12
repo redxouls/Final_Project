@@ -108,6 +108,10 @@ while True:
                     main_controller.recov()
                 if event.key == K_a:
                     main_controller.alt[0] = True
+                if event.key == K_s:
+                    main_controller.structure.output()
+                if event.key == K_l:
+                    main_controller.structure.load()
         main_controller.first_time = False
         
         if not main_controller.esc_or_not:

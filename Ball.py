@@ -1,4 +1,4 @@
-import sys, pygame, time
+import sys, pygame, time, os
 import numpy as np
 from pygame.locals import *
 from anastruct import SystemElements
@@ -7,13 +7,14 @@ from Node import *
 from Truss import *
 
 class Ball:
-    def __init__(self,screen,pos=vector(0,0,0)):
+    def __init__(self,screen,label,pos=vector(0,0,0)):
+        self.label = label
         self.screen = screen
         self.radius = 10
-        self.g = 15
-        self.efficient = 0.05
+        self.g = 9.8
+        self.efficient = 0.01
         self.colleffi = 0.8
-        self.power = 70.0
+        self.power = 40.0
         self.v = vector(0,0,0)
         self.pos = pos
         self.a = vector(0,self.g,0)
@@ -45,7 +46,7 @@ class Ball:
         distance = v1.mag*sin(theta)
         return distance
 
-    def collision(self,structure):
+    def collision(self,structure,controller):
         if self.nearest(structure) == None:
             return
         ground = structure.roadtrusses[self.nearest(structure)]
@@ -59,9 +60,15 @@ class Ball:
             v2 /= v2.mag
         N = vector(v2.y,-v2.x,0)
         if (N.dot(self.v)<0 and v1.dot(N)>0) or (N.dot(self.v)>0 and v1.dot(N)<0):
-            newv = -self.v.dot(N)*N + self.v.dot(v2)*v2
-            self.v = newv*self.colleffi
-            structure.loadid = (structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB))
+            newv = -self.v.dot(N)*N*self.colleffi + self.v.dot(v2)*v2
+            self.v = newv
+            #structure.loadid[self.label] = [structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB)]
+            print(asin(abs(v2.y))/pi*180)
+            path8 = os.path.join(controller.dir,'car.png')
+            controller.origin_car = pygame.image.load(path8).convert_alpha()
+            controller.car_size = (80,60)
+            controller.car = pygame.transform.scale(controller.origin_car,controller.car_size)
+            controller.car = pygame.transform.rotate(controller.car,asin(abs(v2.y))/pi*180)
         else:
             return
     
@@ -75,6 +82,7 @@ class Ball:
         v1 /= v1.mag
         if v2.x<0:
             v2*=-1
+        structure.loadid[self.label] = [structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB)]
         ground.collided = True
         return self.power*v2-v1
 
