@@ -57,8 +57,9 @@ class Controller():
         self.fail_textsurface = self.fail_font.render('You lose! Try Again!', False, (255, 0, 0))
         self.fail_rect = self.fail_textsurface.get_rect()
         self.limit_font = pygame.font.SysFont('Comic Sans MS',35)
+        self.car_position = vector(0,0,0)
     def add_ball(self):
-        new_ball = Ball(self.screen)
+        new_ball = Ball(self.screen,self.car_position)
         self.balls.append(new_ball)
 
     def clicked(self,event_type,mouse_pos,event_button):
@@ -92,6 +93,7 @@ class Controller():
             if event_button == 3 and not self.click:
                 self.click = True
                 self.lastc = len(nodes)-1
+            return
         #lastc = len(nodes)-1
         if event_type == MOUSEBUTTONUP and self.click:
             if (nodes[self.lastc].pos.x-structure.nodes[-1].pos.x)**2+(nodes[self.lastc].pos.y-structure.nodes[-1].pos.y)**2>self.tmpc[2]**2:
@@ -141,12 +143,14 @@ class Controller():
             return
         structure.loadid = None
         structure.collapse = False
+        self.running = False
         self.balls  = []
         self.Bios = []
         for i in range(len(structure.tempnodespos)):
             structure.nodes[i].pos = structure.tempnodespos[i]
         for i in range(len(structure.trusses)):
             structure.trusses[i].collapse = False
+        structure.set_orilen()
     
     def check_collapse(self):
         structure = self.structure
@@ -166,18 +170,39 @@ class Controller():
                 truss.collapse = True
                 nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
                 self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
-                for truss in structure.roadtrusses:
-                    truss.collapse = True
+            for truss in structure.roadtrusses:
+                truss.collapse = True
 
-    def initial_platform(self):
+    def initial_platform(self,id):
         structure = self.structure
-        left_nodeA = structure.add_node(0,700)
-        left_nodeB = structure.add_node(200,700)
-        structure.add_truss(left_nodeA,left_nodeB,0)
-        right_nodeA = structure.add_node(1080,700)
-        right_nodeB = structure.add_node(1280,700)
-        structure.add_truss(right_nodeA,right_nodeB,0)
-
+        if id == 1:
+            self.car_position = vector(0,680,0)
+            structure.truss_limit = 25
+            left_nodeA = structure.add_node(0,700)
+            left_nodeB = structure.add_node(200,700)
+            structure.add_truss(left_nodeA,left_nodeB,0)
+            right_nodeA = structure.add_node(1080,200)
+            right_nodeB = structure.add_node(1280,200)
+            structure.add_truss(right_nodeA,right_nodeB,0)
+            return
+        if id == 2:
+            self.car_position = vector(0,180,0)
+            structure.truss_limit = 25
+            left_nodeA = structure.add_node(0,200)
+            left_nodeB = structure.add_node(200,200)
+            structure.add_truss(left_nodeA,left_nodeB,0)
+            right_nodeA = structure.add_node(1080,700)
+            right_nodeB = structure.add_node(1280,700)
+            structure.add_truss(right_nodeA,right_nodeB,0)
+            return
+        if id ==3:
+            left_nodeA = structure.add_node(0,700)
+            left_nodeB = structure.add_node(200,700)
+            structure.add_truss(left_nodeA,left_nodeB,0)
+            right_nodeA = structure.add_node(1080,700)
+            right_nodeB = structure.add_node(1280,700)
+            structure.add_truss(right_nodeA,right_nodeB,0)
+            return
     def delarea(self):
         x1=self.dltcod[0][0]
         x2=self.dltcod[1][0]
@@ -230,6 +255,7 @@ class Controller():
     def update(self):
         structure  = self.structure
         if self.structure.unstable:
+            print('unstable')
             for truss in structure.trusses:
                 truss.collapse = True
                 nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
@@ -268,7 +294,7 @@ class Controller():
         if self.balls != None:
             self.ball_rolling()
             for ball in self.balls:
-                ball_pos = (ball.pos.x-40,ball.pos.y-35)
+                ball_pos = (ball.pos.x-40,ball.pos.y-45)
                 self.screen.blit(self.car,ball_pos)            
         for i in structure.nodes:
             if i in self.dltnode:

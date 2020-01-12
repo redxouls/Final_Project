@@ -10,7 +10,7 @@ from Bio import *
 
 class Structure:
     def __init__(self,screen):
-        self.truss_limit = 20
+        self.truss_limit = 25
         self.trusses = []
         self.nodes = []
         self.click = False
@@ -48,7 +48,6 @@ class Structure:
         self.trusses.append(new_truss)
         if mode==0:
             self.roadtrusses.append(new_truss)
-        print(self.Bios)
         return new_truss
 
     def print_result(self):
@@ -104,7 +103,6 @@ class Structure:
                 for i in self.loadid:
                     ss.point_load(i+1,Fy=30)
                     #ss.show_structure()
-                
             else:
                 return
             ss.solve()
@@ -121,3 +119,9 @@ class Structure:
         except:
             self.unstable = True
             self.collapse = True
+    
+    def set_orilen(self):
+        for truss in self.trusses:
+            truss.oril = truss.length()
+        for truss in self.roadtrusses:
+            truss.oril = truss.length()

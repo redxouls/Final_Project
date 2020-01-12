@@ -42,7 +42,7 @@ while True:
     #in the game
     if  main_controller.game_running and not main_controller.esc_or_not and not main_controller.win:
         if main_controller.first_time:
-            main_controller.initial_platform()
+            main_controller.initial_platform(1)
             main_controller.first_time = False
         
         psedkey=pygame.key.get_pressed()
@@ -92,6 +92,7 @@ while True:
                     main_controller.mode=1
                 if event.key == K_LSHIFT or event.key == K_RSHIFT:
                     if not main_controller.running:
+                        main_controller.structure.set_orilen()
                         main_controller.structure_save()
                         main_controller.first = True
                         main_controller.running = True

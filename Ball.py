@@ -7,15 +7,15 @@ from Node import *
 from Truss import *
 
 class Ball:
-    def __init__(self,screen):
+    def __init__(self,screen,pos=vector(0,0,0)):
         self.screen = screen
-        self.radius = 20
+        self.radius = 10
         self.g = 15
         self.efficient = 0.05
         self.colleffi = 0.8
         self.power = 70.0
         self.v = vector(0,0,0)
-        self.pos = vector(0,679.0,0)
+        self.pos = pos
         self.a = vector(0,self.g,0)
         self.free = True
     def distance(self,*,node=None,truss=None):
@@ -44,6 +44,7 @@ class Ball:
         theta = acos(v1.dot(v2)/(v1.mag*v2.mag))
         distance = v1.mag*sin(theta)
         return distance
+
     def collision(self,structure):
         if self.nearest(structure) == None:
             return
@@ -71,11 +72,12 @@ class Ball:
         v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
         v2 /= v2.mag
+        v1 /= v1.mag
         if v2.x<0:
             v2*=-1
         ground.collided = True
-        return self.power*v2
-    
+        return self.power*v2-v1
+
     def normala(self,structure):
         if self.nearest(structure) == None:
             return

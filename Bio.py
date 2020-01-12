@@ -33,12 +33,6 @@ class Bio():
         dt = self.dt
         self.C.a = -self.bond_force_on_O() / self.C.m +  self.gravity  # 
         self.O.a = self.bond_force_on_O() / self.O.m + self.gravity # 
-        '''
-        if self.C.a.mag>200 or self.O.a.mag>200:
-            print(self.C.a.mag,self.O.a.mag)
-            self.C.a = vector(0,0,0)
-            self.O.a = vector(0,0,0)
-        '''
         self.C.v += self.C.a * dt
         self.O.v += self.O.a * dt
         self.C.pos += self.C.v * dt
