@@ -150,9 +150,10 @@ class Structure:
             for cod in data['nodes']:
                 self.add_node(cod[0],cod[1])
             for link in data['trusses']:
-                self.add_truss(self.nodes[link[0]],self.nodes[link[1]],1)
-            for link in data['roadtrusses']:
-                self.add_truss(self.nodes[link[0]],self.nodes[link[1]],0)
+                if link in data['roadtrusses']:
+                    self.add_truss(self.nodes[link[0]],self.nodes[link[1]],0)
+                else:
+                    self.add_truss(self.nodes[link[0]],self.nodes[link[1]],1)
             print('successfully load',data)
         except:
             print('File Not Found!!')

@@ -8,6 +8,7 @@ from Node import *
 from Truss import *
 from Bio import *
 from Structure import *
+import Car
 
 class Controller():
     def __init__(self,structure,screen):
@@ -58,10 +59,12 @@ class Controller():
         self.fail_rect = self.fail_textsurface.get_rect()
         self.limit_font = pygame.font.SysFont('Comic Sans MS',35)
         self.car_position = vector(0,0,0)
+        self.mkts = []
     def add_ball(self):
-        new_ball = Ball(self.screen,len(self.balls),self.car_position)
+        new_balls = [Ball(self.screen,len(self.balls),self.car_position),Ball(self.screen,len(self.balls),self.car_position)]
         self.structure.loadid.append([])
-        self.balls.append(new_ball)
+        self.balls.append(new_balls)
+        self.mkts.append(Car.BouncyBalls(self,self.car_position))
 
     def clicked(self,event_type,mouse_pos,event_button):
         structure = self.structure
@@ -107,28 +110,23 @@ class Controller():
             return
         
     def ball_rolling(self):
-        dt = 0.1
         structure = self.structure
-        self.t += dt
-        for ball in self.balls:
-            if ball.ground_distance(structure)!= None:
-                if ball.ground_distance(structure)-ball.radius < 0.001 :
-                    structure.collision = self.t
-                    ball.collision(structure,self)
-                    ball.a = vector(0,ball.g,0)+ball.engine(structure)-ball.normala(structure)
-                else:
-                    structure.loadid[ball.label] = []
-                    ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
-                
-                if ball.ground_distance(structure)-ball.radius < 1:
-                    ball.a = vector(0,ball.g,0)+ball.engine(structure)-ball.normala(structure)
-                
-            else:
-                ball.a = vector(0,ball.g,0)+ ball.v*ball.efficient
-            if ball.pos.x >= 1280 and ball.pos.y<700 and self.running:
-                self.win = True
-            ball.v += ball.a*dt
-            ball.pos += ball.v*dt
+        for mkt in self.mkts:
+            mkt.run()
+            for ballpair in self.balls:
+                #print(ballpair[0].ground_distance(self.structure),ballpair[1].ground_distance(self.structure))
+                if ballpair[0].ground_distance(self.structure)!=None:
+                    if abs(ballpair[0].ground_distance(self.structure)-25)<1:
+                        structure.loadid[ballpair[0].label] = [structure.nodes.index(structure.trusses[ballpair[0].nearest(structure)].nodeA),structure.nodes.index(structure.trusses[ballpair[0].nearest(structure)].nodeB)]
+                    else:
+                        structure.loadid[ballpair[0].label] = []
+                if ballpair[1].ground_distance(self.structure)!=None:
+                    if abs(ballpair[1].ground_distance(self.structure)-25)<1:
+                        structure.loadid[ballpair[1].label] = [structure.nodes.index(structure.trusses[ballpair[1].nearest(structure)].nodeA),structure.nodes.index(structure.trusses[ballpair[1].nearest(structure)].nodeB)]
+                    else:
+                        structure.loadid[ballpair[0].label] = []
+                if ballpair[0].pos.x>1200 and ballpair[0].pos.y<960 and ballpair[0].pos.y>0:
+                    self.win = True
 
     def structure_save(self):
         if self.structure.collapse:
@@ -177,7 +175,7 @@ class Controller():
     def initial_platform(self,mapid):
         structure = self.structure
         if mapid == 1:
-            self.car_position = vector(0,680,0)
+            self.car_position = vector(60,650,0)
             structure.truss_limit = 25
             left_nodeA = structure.add_node(0,700)
             left_nodeB = structure.add_node(200,700)
@@ -187,7 +185,7 @@ class Controller():
             structure.add_truss(right_nodeA,right_nodeB,0)
             return
         if mapid == 2:
-            self.car_position = vector(0,180,0)
+            self.car_position = vector(60,150,0)
             structure.truss_limit = 25
             left_nodeA = structure.add_node(0,200)
             left_nodeB = structure.add_node(200,200)
@@ -292,11 +290,8 @@ class Controller():
         self.limit_topleft = (1200-self.limit_rect[2],80)
         self.screen.blit(self.limit_textsurface,self.limit_topleft)
         #----------------------------
-        if self.balls != None:
+        if self.balls != None and self.running:
             self.ball_rolling()
-            for ball in self.balls:
-                ball_pos = (ball.pos.x-40,ball.pos.y-45)
-                self.screen.blit(self.car,ball_pos)            
         for i in structure.nodes:
             if i in self.dltnode:
                 i.draw_node(True)
