@@ -9,13 +9,20 @@ class Node :
             self.pos = vector(x,y,0)
         else:
             self.pos = pos
-        self.radius = 10
+        self.radius = 15
         self.maxforce = 0.000000002
         self.screen = screen
-    def draw_node(self):
+    def draw_node(self,todel):
         screen = self.screen
-        pygame.draw.circle(screen, (0, 127, 255), self.to_int(), self.radius, 0)
+        if todel:
+            pygame.draw.circle(screen, (230, 230, 230), self.to_int(), self.radius, 0)
+        else:
+            pygame.draw.circle(screen, (96, 96, 96), self.to_int(), self.radius, 0)
         return 
+    def draw_obnode(self):
+        screen = self.screen
+        pygame.draw.circle(screen, (0, 230, 0), self.to_int(), self.radius, 0)
+        return
     def change_pos(self,newpos):
         self.pos = newpos
         return 
