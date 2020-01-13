@@ -33,12 +33,6 @@ class Bio():
         dt = self.dt
         self.C.a = -self.bond_force_on_O() / self.C.m +  self.gravity  # 
         self.O.a = self.bond_force_on_O() / self.O.m + self.gravity # 
-        '''
-        if self.C.a.mag>200 or self.O.a.mag>200:
-            print(self.C.a.mag,self.O.a.mag)
-            self.C.a = vector(0,0,0)
-            self.O.a = vector(0,0,0)
-        '''
         self.C.v += self.C.a * dt
         self.O.v += self.O.a * dt
         self.C.pos += self.C.v * dt
@@ -69,7 +63,7 @@ class Bio():
                 if (COs[i].O.pos-COs[j].O.pos).mag<=2*COs[i].C.radius and dot(COs[i].O.pos-COs[j].O.pos,COs[i].O.v-COs[j].O.v)<0:
                     COs[i].O.v, COs[j].O.v = Bio.collision(COs[i].O,COs[j].O)
     def draw_Truss(self,screen):
-        pygame.draw.line(screen,(0,0,0), self.to_int(1), self.to_int(2), 8)
+        pygame.draw.line(screen,(204,102,0), self.to_int(1), self.to_int(2), 17)
     def draw_node(self,screen):
         pygame.draw.circle(screen, (0, 127, 255), [int(self.O.pos.x), int(self.O.pos.y)], self.C.radius, 0)
         pygame.draw.circle(screen, (0, 127, 255), [int(self.C.pos.x), int(self.C.pos.y)], self.C.radius, 0)
