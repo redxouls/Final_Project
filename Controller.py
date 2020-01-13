@@ -64,6 +64,7 @@ class Controller():
         self.choose_map = False
         self.button_help = False
     def add_ball(self):
+        self.mkts = []
         self.car_position = vector(30,self.structure.nodes[0].pos.y-90,0)
         new_balls = [Ball(self.screen,len(self.balls),self.car_position),Ball(self.screen,len(self.balls),self.car_position)]
         self.structure.loadid.append([])
