@@ -29,6 +29,9 @@ class Truss():
             pygame.draw.line(self.screen,(230,230,230), self.nodeA.to_int(), self.nodeB.to_int(), 17)
         else:
             pygame.draw.line(self.screen,(0,0,0), self.nodeA.to_int(), self.nodeB.to_int(), 17) 
+    def draw_obtruss(self):    
+        screen = self.screen
+        pygame.draw.line(self.screen,(30,170,30), self.nodeA.to_int(), self.nodeB.to_int(), 17) 
 
     def damaged(self,force_ext):
         return self.maxforce>force_ext

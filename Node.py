@@ -19,6 +19,10 @@ class Node :
         else:
             pygame.draw.circle(screen, (96, 96, 96), self.to_int(), self.radius, 0)
         return 
+    def draw_obnode(self):
+        screen = self.screen
+        pygame.draw.circle(screen, (30, 170, 30), self.to_int(), self.radius, 0)
+        return
     def change_pos(self,newpos):
         self.pos = newpos
         return 

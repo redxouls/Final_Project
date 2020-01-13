@@ -86,6 +86,8 @@ class BouncyBalls(object):
         self.trusses = []
         for i in self.structure.roadtrusses:
             self.trusses.append([(int(i.nodeA.pos.x),960-int(i.nodeA.pos.y)),(int(i.nodeB.pos.x),960-int(i.nodeB.pos.y))])
+        for i in self.structure.obtruss:
+            self.trusses.append([(int(i.nodeA.pos.x),960-int(i.nodeA.pos.y)),(int(i.nodeB.pos.x),960-int(i.nodeB.pos.y))])
         rt=self.trusses
         static_lines=[]
         if len(self._space.shapes)!=0:
@@ -120,7 +122,6 @@ class BouncyBalls(object):
         else :
             pos = Vec2d(setpos.x,960-setpos.y)
         wheel_color = 52,219,119
-        shovel_color = 219,119,52
         mass = 100
         radius = 25
         moment = pymunk.moment_for_circle(mass, 20, radius)
@@ -147,8 +148,8 @@ class BouncyBalls(object):
         self._space.add(chassi_b, chassi_s)
 
 
-        wheel1_b.position = pos - (55,0)
-        wheel2_b.position = pos + (55,0)
+        wheel1_b.position = pos + (55,0)
+        wheel2_b.position = pos - (55,0)
         chassi_b.position = pos - (0,-25)
 
         self._space.add(

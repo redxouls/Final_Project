@@ -43,6 +43,7 @@ class Controller():
         self.dlttruss=[]
         self.tmpc=[False,(0,0),200]
         self.win = False
+        self.lose = False
         self.altednode = -1
         self.alt = [False,False]
         self.reltruss=[]
@@ -63,6 +64,7 @@ class Controller():
         self.choose_map = False
         self.button_help = False
     def add_ball(self):
+        self.car_position = vector(30,self.structure.nodes[0].pos.y-90,0)
         new_balls = [Ball(self.screen,len(self.balls),self.car_position),Ball(self.screen,len(self.balls),self.car_position)]
         self.structure.loadid.append([])
         self.balls.append(new_balls)
@@ -129,6 +131,8 @@ class Controller():
                         structure.loadid[ballpair[0].label] = []
                 if ballpair[0].pos.x>1200 and ballpair[0].pos.y<960 and ballpair[0].pos.y>0:
                     self.win = True
+                if ballpair[0].pos.x<1200 and ballpair[0].pos.y>=960:
+                    self.lose = True
 
     def structure_save(self):
         if self.structure.collapse:
@@ -144,6 +148,7 @@ class Controller():
             return
         structure.loadid = []
         structure.collapse = False
+        self.lose = False
         self.running = False
         self.balls  = []
         self.Bios = []
@@ -203,6 +208,18 @@ class Controller():
             right_nodeA = structure.add_node(1080,700)
             right_nodeB = structure.add_node(1280,700)
             structure.add_truss(right_nodeA,right_nodeB,0)
+            ob_node_la1 = structure.add_obnode(500,960)
+            ob_node_lb1 = structure.add_obnode(500,560)
+            structure.add_obstruss(ob_node_la1,ob_node_lb1)
+            ob_node_la2 = structure.add_obnode(500,560)
+            ob_node_lb2 = structure.add_obnode(600,460)
+            structure.add_obstruss(ob_node_la2,ob_node_lb2)
+            ob_node_ra1 = structure.add_obnode(600,460)
+            ob_node_rb1 = structure.add_obnode(700,560)
+            structure.add_obstruss(ob_node_ra1,ob_node_rb1)
+            ob_node_ra2 = structure.add_obnode(700,560)
+            ob_node_rb2 = structure.add_obnode(700,960)
+            structure.add_obstruss(ob_node_ra2,ob_node_rb2)
             return
     def delarea(self):
         x1=self.dltcod[0][0]
@@ -299,6 +316,8 @@ class Controller():
                 i.draw_node(True)
             else:
                 i.draw_node(False)
+        for i in structure.obnode:
+            i.draw_obnode()
         for i in structure.trusses:
             if i in structure.roadtrusses :
                 if not i.collapse:
@@ -312,11 +331,13 @@ class Controller():
                         i.draw_Truss(True)        
                     else:
                         i.draw_Truss(False)
+        for i in structure.obtruss:
+            i.draw_obtruss()
         if self.tmpc[0]:
             pygame.draw.circle(screen,(230,230,230),self.tmpc[1],self.tmpc[2],1)
             for i in range(12):
                 pygame.draw.circle(screen,(230,230,230),(int(self.tmpc[1][0]+self.tmpc[2]*cos(pi*i/6)),int(self.tmpc[1][1]+self.tmpc[2]*sin(pi*i/6))),5)
-        if structure.collapse:
+        if structure.collapse or self.lose:
             self.screen.blit(self.fail_textsurface,(1280/2-self.fail_rect[2]/2,960/6))
             
     def game_start_interface(self):
@@ -428,6 +449,8 @@ class Controller():
             if check.clicked(mpos):
                 nid=i
                 break
+        if nid <=3:
+            return -1
         for tru in trusses:
             if tru.nodeA == nodes[nid] or tru.nodeB == nodes[nid]:
                 self.reltruss.append(tru)
@@ -477,16 +500,16 @@ class Controller():
 
 
     def click_map1_button(self,downcod):
-        if self.map1_button_topleft[0] < downcod[0] < self.map1_button_topleft[0]+self.map1_button_size[0]:
-            if self.map1_button_topleft[1] < downcod[1] < self.map1_button_topleft[1] + self.map1_button_size[1]:
+        if self.map1_button_topleft[0] +15< downcod[0] < self.map1_button_topleft[0]+self.map1_button_size[0] -15:
+            if self.map1_button_topleft[1]+20 < downcod[1] < self.map1_button_topleft[1] + self.map1_button_size[1]-20:
                 return True
     def click_map2_button(self,downcod):
-        if self.map2_button_topleft[0] < downcod[0] < self.map2_button_topleft[0]+self.map2_button_size[0]:
-            if self.map2_button_topleft[1] < downcod[1] < self.map2_button_topleft[1] + self.map2_button_size[1]:
+        if self.map2_button_topleft[0]+15 < downcod[0] < self.map2_button_topleft[0]+self.map2_button_size[0]-15:
+            if self.map2_button_topleft[1]+20 < downcod[1] < self.map2_button_topleft[1] + self.map2_button_size[1]-20:
                 return True
     def click_map3_button(self,downcod):
-        if self.map3_button_topleft[0] < downcod[0] < self.map3_button_topleft[0]+self.map3_button_size[0]:
-            if self.map3_button_topleft[1] < downcod[1] < self.map3_button_topleft[1] + self.map3_button_size[1]:
+        if self.map3_button_topleft[0]+15 < downcod[0] < self.map3_button_topleft[0]+self.map3_button_size[0]-15:
+            if self.map3_button_topleft[1]+20 < downcod[1] < self.map3_button_topleft[1] + self.map3_button_size[1]-20:
                 return True
     def click_help(self,downcod):
         if self.help_button_topleft[0] < downcod[0] < self.help_button_topleft[0]+self.help_button_size[0]:

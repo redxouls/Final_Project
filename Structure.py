@@ -28,6 +28,8 @@ class Structure:
         self.tmpc=[False,(0,0),120]
         self.unstable = False
         self.tempnodespos = []
+        self.obtruss = []
+        self.obnode = []
 
     def add_node(self,x,y):
         if len(self.trusses)> self.truss_limit +1 :
@@ -157,4 +159,14 @@ class Structure:
             print('successfully load',data)
         except:
             print('File Not Found!!')
+    def add_obstruss(self,nodeA,nodeB):
+        new_truss = Truss(nodeA,nodeB,self.screen)
+        self.obtruss.append(new_truss)
+        return new_truss
+    def add_obnode(self,x,y):
+        new_node = Node(x=int(x),y=int(y),screen=self.screen)
+        self.obnode.append(new_node)
+        return new_node
+
+    
         
