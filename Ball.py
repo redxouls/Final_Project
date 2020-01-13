@@ -46,53 +46,5 @@ class Ball:
         distance = v1.mag*sin(theta)
         return distance
 
-    def collision(self,structure,controller):
-        if self.nearest(structure) == None:
-            return
-        ground = structure.roadtrusses[self.nearest(structure)]
-        if ground.nodeA.pos.x<=ground.nodeA.pos.x:
-            v1 = self.pos-vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-            v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-            v2 /= v2.mag
-        else:
-            v1 = self.pos-vector(ground.nodeA.pos.x,ground.nodeB.pos.y,0)
-            v2 = vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0) - vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0)
-            v2 /= v2.mag
-        N = vector(v2.y,-v2.x,0)
-        if (N.dot(self.v)<0 and v1.dot(N)>0) or (N.dot(self.v)>0 and v1.dot(N)<0):
-            newv = -self.v.dot(N)*N*self.colleffi + self.v.dot(v2)*v2
-            self.v = newv
-            #structure.loadid[self.label] = [structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB)]
-            print(asin(abs(v2.y))/pi*180)
-            path8 = os.path.join(controller.dir,'car.png')
-            controller.origin_car = pygame.image.load(path8).convert_alpha()
-            controller.car_size = (80,60)
-            controller.car = pygame.transform.scale(controller.origin_car,controller.car_size)
-            controller.car = pygame.transform.rotate(controller.car,asin(abs(v2.y))/pi*180)
-        else:
-            return
     
-    def engine(self,structure):
-        if self.nearest(structure) == None:
-            return
-        ground = structure.roadtrusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-        v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-        v2 /= v2.mag
-        v1 /= v1.mag
-        if v2.x<0:
-            v2*=-1
-        structure.loadid[self.label] = [structure.nodes.index(structure.trusses[self.nearest(structure)].nodeA),structure.nodes.index(structure.trusses[self.nearest(structure)].nodeB)]
-        ground.collided = True
-        return self.power*v2-v1
-
-    def normala(self,structure):
-        if self.nearest(structure) == None:
-            return
-        ground = structure.roadtrusses[self.nearest(structure)]
-        v1 = self.pos - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-        v2 = vector(ground.nodeB.pos.x,ground.nodeB.pos.y,0) - vector(ground.nodeA.pos.x,ground.nodeA.pos.y,0)
-        v2 /= v2.mag
-        N = vector(-v2.y,v2.x,0)
-        return N.dot(vector(0,self.g,0))*N
     

@@ -60,6 +60,8 @@ class Controller():
         self.limit_font = pygame.font.SysFont('Comic Sans MS',35)
         self.car_position = vector(0,0,0)
         self.mkts = []
+        self.choose_map = False
+        self.button_help = False
     def add_ball(self):
         new_balls = [Ball(self.screen,len(self.balls),self.car_position),Ball(self.screen,len(self.balls),self.car_position)]
         self.structure.loadid.append([])
@@ -378,10 +380,17 @@ class Controller():
         self.origin_esc_exit_button = pygame.image.load(path7).convert_alpha()
         self.esc_exit_button_size = (200,100)
         self.esc_exit_button = pygame.transform.scale(self.origin_esc_exit_button,self.esc_exit_button_size)
-        self.esc_exit_button_topleft = (1280/2-100,960/4+200)
+        self.esc_exit_button_topleft = (1280/2-100,960/4+300)
         self.screen.blit(self.esc_exit_button,self.esc_exit_button_topleft)
         #判別是否在esc畫面中
         self.esc_or_not = True
+        ########3
+        path15 = os.path.join(self.dir,'help.png')
+        self.origin_help_button = pygame.image.load(path15).convert_alpha()
+        self.help_button_size = (200,100)
+        self.help_button = pygame.transform.scale(self.origin_help_button,self.help_button_size)
+        self.help_button_topleft = (1280/2-100,960/4+200)
+        self.screen.blit(self.help_button,self.help_button_topleft) 
     def click_esc_resume_button(self,downcod):
         if self.esc_resume_button_topleft[0] < downcod[0] < self.esc_resume_button_topleft[0]+self.esc_resume_button_size[0]:
             if self.esc_resume_button_topleft[1] < downcod[1] < self.esc_resume_button_topleft[1] + self.esc_resume_button_size[1]:
@@ -432,5 +441,138 @@ class Controller():
                 return
         nodes[self.altednode].pos = npos
     
+    def choose_map_interface(self):
+        path3 = os.path.join(self.dir,'background.png')
+        self.origin_background = pygame.image.load(path3).convert_alpha()
+        self.background_size = (1280,960)
+        self.background = pygame.transform.scale(self.origin_background,self.background_size)
+        self.screen.blit(self.background,(0,0))
+        
+        self.map_font = pygame.font.SysFont('Comic Sans MS', 70)
+        self.map_textsurface = self.map_font.render('Choose Your Map!! ', True, (255, 0, 0))
+        self.map_rect = self.map_textsurface.get_rect()
+        self.screen.blit(self.map_textsurface,(1280/2-self.map_rect[2]/2,960/8))
+        
+        path11 = os.path.join(self.dir,'map1.png')
+        self.origin_map1_button = pygame.image.load(path11).convert_alpha()
+        self.map1_button_size = (200,100)
+        self.map1_button = pygame.transform.scale(self.origin_map1_button,self.map1_button_size)
+        
+        self.map1_button_topleft = (1280/2-100,960/4+100)##########
+        self.screen.blit(self.map1_button,self.map1_button_topleft)
+
+        path12 = os.path.join(self.dir,'map2.png')
+        self.origin_map2_button = pygame.image.load(path12).convert_alpha()
+        self.map2_button_size = (200,100)
+        self.map2_button = pygame.transform.scale(self.origin_map2_button,self.map2_button_size)
+        self.map2_button_topleft = (1280/2-100,960/4+200)############
+        self.screen.blit(self.map2_button,self.map2_button_topleft)
+
+        path13 = os.path.join(self.dir,'map3.png')
+        self.origin_map3_button = pygame.image.load(path13).convert_alpha()
+        self.map3_button_size = (200,100)
+        self.map3_button = pygame.transform.scale(self.origin_map3_button,self.map3_button_size)
+        self.map3_button_topleft = (1280/2-100,960/4+300)##############
+        self.screen.blit(self.map3_button,self.map3_button_topleft)
+
+
+    def click_map1_button(self,downcod):
+        if self.map1_button_topleft[0] < downcod[0] < self.map1_button_topleft[0]+self.map1_button_size[0]:
+            if self.map1_button_topleft[1] < downcod[1] < self.map1_button_topleft[1] + self.map1_button_size[1]:
+                return True
+    def click_map2_button(self,downcod):
+        if self.map2_button_topleft[0] < downcod[0] < self.map2_button_topleft[0]+self.map2_button_size[0]:
+            if self.map2_button_topleft[1] < downcod[1] < self.map2_button_topleft[1] + self.map2_button_size[1]:
+                return True
+    def click_map3_button(self,downcod):
+        if self.map3_button_topleft[0] < downcod[0] < self.map3_button_topleft[0]+self.map3_button_size[0]:
+            if self.map3_button_topleft[1] < downcod[1] < self.map3_button_topleft[1] + self.map3_button_size[1]:
+                return True
+    def click_help(self,downcod):
+        if self.help_button_topleft[0] < downcod[0] < self.help_button_topleft[0]+self.help_button_size[0]:
+            if self.help_button_topleft[1] < downcod[1] < self.help_button_topleft[1] + self.help_button_size[1]:
+                return True
+
+    def help_interface(self):
+        path4 = os.path.join(self.dir,'esc_bg1.png')
+        self.origin_esc_bg = pygame.image.load(path4).convert_alpha()
+        self.esc_bg = pygame.transform.scale(self.origin_esc_bg,(1280,960))
+        self.screen.blit(self.esc_bg,(0,0))
+
+        self.con_font = pygame.font.SysFont('Comic Sans MS',50)
+        self.con_textsurface = self.con_font.render('CLICK TO BACK TO THE GAME',True,(0,0,0))
+        self.con_rect = self.con_textsurface.get_rect()
+        self.screen.blit(self.con_textsurface,(1280/2-self.con_rect[2]/2,700))
+
+        path20 = os.path.join(self.dir,'1.png')
+        self.origin_image_1 = pygame.image.load(path20).convert_alpha()
+        self.image_1 = pygame.transform.scale(self.origin_image_1,(90,60))
+        self.screen.blit(self.image_1,(100,50))
+
+        path21 = os.path.join(self.dir,'2.png')
+        self.origin_image_2 = pygame.image.load(path21).convert_alpha()
+        self.image_2 = pygame.transform.scale(self.origin_image_2,(90,60))
+        self.screen.blit(self.image_2,(100,130))
+
+        path22 = os.path.join(self.dir,'4.png')
+        self.origin_image_3 = pygame.image.load(path22).convert_alpha()
+        self.image_3 = pygame.transform.scale(self.origin_image_3,(90,60))
+        self.screen.blit(self.image_3,(100,210))
+
+        path23 = os.path.join(self.dir,'D.png')
+        self.origin_image_D = pygame.image.load(path23).convert_alpha()
+        self.image_D = pygame.transform.scale(self.origin_image_D,(90,60))
+        self.screen.blit(self.image_D,(100,290))
+
+        path24 = os.path.join(self.dir,'backspace1.png')
+        self.origin_image_backspace = pygame.image.load(path24).convert_alpha()
+        self.image_backspace = pygame.transform.scale(self.origin_image_backspace,(120,40))
+        self.screen.blit(self.image_backspace,(100,380))
+
+        path26 = os.path.join(self.dir,'s.png')
+        self.origin_image_s = pygame.image.load(path26).convert_alpha()
+        self.image_s = pygame.transform.scale(self.origin_image_s,(90,60))
+        self.screen.blit(self.image_s,(100,460))
+
+        path29= os.path.join(self.dir,'l.png')
+        self.origin_image_l = pygame.image.load(path29).convert_alpha()
+        self.image_l = pygame.transform.scale(self.origin_image_l,(90,60))
+        self.screen.blit(self.image_l,(100,540))
+
+        path30= os.path.join(self.dir,'shift.png')
+        self.origin_image_shift = pygame.image.load(path30).convert_alpha()
+        self.image_shift = pygame.transform.scale(self.origin_image_shift,(120,40))
+        self.screen.blit(self.image_shift,(100,620))
+
+        self._1_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self._1_textsurface = self._1_font.render('Floor Mode ', False, (255, 255, 255))
+        self.screen.blit(self._1_textsurface,(300,50))
+
+        self._2_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self._2_textsurface = self._2_font.render('Wood Mode ', False, (255, 255, 255))
+        self.screen.blit(self._2_textsurface,(300,130))
+
+        self._4_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self._4_textsurface = self._4_font.render('Reset', False, (255, 255, 255))
+        self.screen.blit(self._4_textsurface,(300,210))
+
+        self._d_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self._d_textsurface = self._d_font.render('Hold D and select the area you want to delete ', False, (255, 255, 255))
+        self.screen.blit(self._d_textsurface,(300,290))
+
+        self.backspace_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.back_textsurface = self.backspace_font.render('After selecting the area, press backspace to remove the structure',False,(255,255,255))
+        self.screen.blit(self.back_textsurface,(300,380))
+
+        self.s_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.s_textsurface = self.s_font.render('Save structure',False,(255,255,255))
+        self.screen.blit(self.s_textsurface,(300,460))
+
+        self.l_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.l_textsurface = self.l_font.render('Load previous structure',False,(255,255,255))
+        self.screen.blit(self.l_textsurface,(300,540))
+
+        self.shift_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.shift_textsurface = self.shift_font.render('Stop / Running', False, (255, 255, 255))
+        self.screen.blit(self.shift_textsurface,(300,620))
     
-            

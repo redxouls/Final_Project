@@ -24,7 +24,7 @@ main_controller = Controller(main_structure,screen)
 
 while True:
     #初始介面
-    if not main_controller.game_running:
+    if not main_controller.game_running and not  main_controller.choose_map:
         main_controller.game_start_interface()
         
         for event in pygame.event.get():
@@ -34,15 +34,33 @@ while True:
             if event.type == MOUSEBUTTONDOWN:
                 downcod = pygame.mouse.get_pos()
                 if main_controller.click_start_button(downcod):
-                    main_controller.game_running = True
+                    main_controller.game_running = False
+                    main_controller.choose_map = True
 
                 if main_controller.click_exit_button(downcod):
                     pygame.quit()
                     sys.exit()
+    if not main_controller.game_running and main_controller.choose_map:
+        main_controller.choose_map_interface()
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONDOWN:
+                downcod = pygame.mouse.get_pos()
+                if main_controller.click_map1_button(downcod):
+                    main_controller.map = 1
+                    main_controller.game_running = True
+                    main_controller.first_click = True
+                if main_controller.click_map2_button(downcod):
+                    main_controller.map = 2
+                    main_controller.game_running = True
+                    main_controller.first_click = True
+                if main_controller.click_map3_button(downcod):
+                    main_controller.map = 3
+                    main_controller.game_running = True
+                    main_controller.first_click = True  
     #in the game
-    if  main_controller.game_running and not main_controller.esc_or_not and not main_controller.win:
+    if  main_controller.game_running and not main_controller.esc_or_not and not main_controller.win and not main_controller.button_help:
         if main_controller.first_time:
-            main_controller.initial_platform(1)
+            main_controller.initial_platform(main_controller.map)
             main_controller.first_time = False
         
         psedkey=pygame.key.get_pressed()
@@ -116,7 +134,7 @@ while True:
         
         if not main_controller.esc_or_not:
             main_controller.update()
-    if main_controller.game_running and not main_controller.esc_or_not and main_controller.win:
+    if main_controller.game_running and not main_controller.esc_or_not and main_controller.win and not main_controller.button_help:
         main_controller.show_win()
         
         main_controller.running = False
@@ -127,7 +145,7 @@ while True:
                 main_controller.game_running = False
                 main_controller.game_restart()
     ##esc(in the game)
-    if main_controller.game_running and main_controller.esc_or_not:  
+    if main_controller.game_running and main_controller.esc_or_not and not main_controller.button_help:  
         for event in pygame.event.get():
             if event.type == MOUSEBUTTONDOWN:
                 downcod = pygame.mouse.get_pos()
@@ -143,7 +161,18 @@ while True:
                 if main_controller.click_esc_resume_button(downcod):
                     main_controller.first_click = True
                     main_controller.esc_or_not = False
+
+                if main_controller.click_help(downcod):
+                    main_controller.first_click = True
+                    main_controller.button_help = True
+                    main_controller.esc_or_not = False
         
+    if main_controller.game_running and not main_controller.esc_or_not and main_controller.button_help:
+        main_controller.help_interface()
+        for event in pygame.event.get():
+            if event.type == MOUSEBUTTONDOWN:
+                main_controller.first_click = True
+                main_controller.button_help = False
 
     if main_controller.structure.collapse and main_controller.game_running and not main_controller.esc_or_not:
         for test in main_controller.Bios:
