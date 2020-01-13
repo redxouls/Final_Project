@@ -368,13 +368,13 @@ class Controller():
         self.screen.blit(self.start_button,self.start_button_topleft)
         self.screen.blit(self.exit_button,self.exit_button_topleft)
     def click_start_button(self,downcod):
-        if  self.start_button_topleft[0]< downcod[0] < self.start_button_topleft[0]+self.start_button_size[0]:
-            if self.start_button_topleft[1] < downcod[1] < self.start_button_topleft[1] + self.start_button_size[1]:
+        if  self.start_button_topleft[0]+15< downcod[0] < self.start_button_topleft[0]+self.start_button_size[0]-20:
+            if self.start_button_topleft[1]+15 < downcod[1] < self.start_button_topleft[1] + self.start_button_size[1]-20:
                 return True
         return False
     def click_exit_button(self,downcod):
-        if self.exit_button_topleft[0] < downcod[0] < self.exit_button_topleft[0]+self.exit_button_size[0]:
-            if self.exit_button_topleft[1] < downcod[1] < self.exit_button_topleft[1] + self.exit_button_size[1]:
+        if self.exit_button_topleft[0]+15 < downcod[0] < self.exit_button_topleft[0]+self.exit_button_size[0]-20:
+            if self.exit_button_topleft[1]+15 < downcod[1] < self.exit_button_topleft[1] + self.exit_button_size[1]-20:
                 return True
         return False
     def esc_interface(self):
@@ -413,18 +413,18 @@ class Controller():
         self.help_button_topleft = (1280/2-100,960/4+200)
         self.screen.blit(self.help_button,self.help_button_topleft) 
     def click_esc_resume_button(self,downcod):
-        if self.esc_resume_button_topleft[0] < downcod[0] < self.esc_resume_button_topleft[0]+self.esc_resume_button_size[0]:
-            if self.esc_resume_button_topleft[1] < downcod[1] < self.esc_resume_button_topleft[1] + self.esc_resume_button_size[1]:
+        if self.esc_resume_button_topleft[0]+15 < downcod[0] < self.esc_resume_button_topleft[0]+self.esc_resume_button_size[0]-20:
+            if self.esc_resume_button_topleft[1]+15 < downcod[1] < self.esc_resume_button_topleft[1] + self.esc_resume_button_size[1]-20:
                 return True
         return False
     def click_esc_restart_button(self,downcod):
-        if self.esc_restart_button_topleft[0] < downcod[0] < self.esc_restart_button_topleft[0]+self.esc_restart_button_size[0]:
-            if self.esc_restart_button_topleft[1] < downcod[1] < self.esc_restart_button_topleft[1] + self.esc_restart_button_size[1]:
+        if self.esc_restart_button_topleft[0]+15 < downcod[0] < self.esc_restart_button_topleft[0]+self.esc_restart_button_size[0]-20:
+            if self.esc_restart_button_topleft[1]+15 < downcod[1] < self.esc_restart_button_topleft[1] + self.esc_restart_button_size[1]-20:
                 return True
         return False
     def click_esc_exit_button(self,downcod):
-        if self.esc_exit_button_topleft[0] < downcod[0] < self.esc_exit_button_topleft[0]+self.esc_exit_button_size[0]:
-            if self.esc_exit_button_topleft[1] < downcod[1] < self.esc_exit_button_topleft[1] + self.esc_exit_button_size[1]:
+        if self.esc_exit_button_topleft[0]+15 < downcod[0] < self.esc_exit_button_topleft[0]+self.esc_exit_button_size[0]-20:
+            if self.esc_exit_button_topleft[1]+15 < downcod[1] < self.esc_exit_button_topleft[1] + self.esc_exit_button_size[1]-20:
                 return True
         return False
     def game_restart(self):
