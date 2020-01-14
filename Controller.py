@@ -124,12 +124,12 @@ class Controller():
                     if abs(ballpair[0].ground_distance(self.structure)-25)<1:
                         structure.loadid[ballpair[0].label] = [structure.nodes.index(structure.trusses[ballpair[0].nearest(structure)].nodeA),structure.nodes.index(structure.trusses[ballpair[0].nearest(structure)].nodeB)]
                     else:
-                        structure.loadid[ballpair[0].label] = []
+                        structure.loadid[ballpair[1].label] = []
                 if ballpair[1].ground_distance(self.structure)!=None:
                     if abs(ballpair[1].ground_distance(self.structure)-25)<1:
                         structure.loadid[ballpair[1].label] = [structure.nodes.index(structure.trusses[ballpair[1].nearest(structure)].nodeA),structure.nodes.index(structure.trusses[ballpair[1].nearest(structure)].nodeB)]
                     else:
-                        structure.loadid[ballpair[0].label] = []
+                        structure.loadid[ballpair[1].label] = []
                 if ballpair[0].pos.x>1200 and ballpair[0].pos.y<960 and ballpair[0].pos.y>0:
                     self.win = True
                 if ballpair[0].pos.x<1200 and ballpair[0].pos.y>=960:
