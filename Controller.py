@@ -162,16 +162,17 @@ class Controller():
     def check_collapse(self):
         structure = self.structure
         collpase = False
+        hit = False
         for truss in structure.trusses:
-            if truss.length()>truss.oril+3:
+            for tru in structure.obtruss:
+                if truss.truss_touch(tru):
+                    hit = True
+                    break
+            if truss.length()>truss.oril+3 or hit:
                 collpase  = True
                 self.running = True
                 structure.collapse = True
                 truss.collapse = True
-                '''
-                nodeB = Node(pos=truss.oril*norm(truss.nodeB.pos-truss.nodeA.pos)+truss.nodeA.pos)
-                self.Bios.append(Bio(nodeA=Node(pos=truss.nodeA.pos),nodeB=nodeB))
-                '''
         if collpase:
             for truss in structure.trusses:
                 truss.collapse = True
