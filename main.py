@@ -67,11 +67,7 @@ while True:
             main_controller.initial_platform(main_controller.map)
             main_controller.first_time = False
         
-        psedkey=pygame.key.get_pressed()
-        psedmse=pygame.mouse.get_pressed()
-        if main_controller.alt[0] and psedmse[2]:
-            if main_controller.altednode != -1:
-                main_controller.mvnode(pygame.mouse.get_pos())
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 main_controller.structure.print_result()
@@ -134,6 +130,11 @@ while True:
                     main_controller.structure.output()
                 if event.key == K_l:
                     main_controller.structure.load()
+        psedkey=pygame.key.get_pressed()
+        psedmse=pygame.mouse.get_pressed()
+        if main_controller.alt[0] and psedmse[2]:
+            if main_controller.altednode != -1:
+                main_controller.mvnode(pygame.mouse.get_pos())
         main_controller.first_time = False
         
         if not main_controller.esc_or_not:
