@@ -146,6 +146,10 @@ class Structure:
         try:
             with open(filename,'r') as f:
                 data = json.loads(f.read())
+            for i in range(4):
+                if self.nodes[i].pos.x != data['nodes'][i][0] or self.nodes[i].pos.y != data['nodes'][i][1]:
+                    print("Please load file in same map")
+                    return 
             self.nodes = []
             self.trusses = []
             self.roadtrusses = []
