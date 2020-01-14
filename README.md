@@ -59,7 +59,7 @@ pip install pymunk
 #### `2. "2" :` To set up "Wood" Truss(which is brown)
 #### * Runing Trial
 #### `3. "4" :` After each test press it to recover
-#### `4. "Shiift" :` To stop or run the test
+#### `4. "Shift" :` To stop or run the test
 #### `5. "Space" :` Put a car onto the field
 #### * Modification of the bridge
 #### `6. "d" :` Press and Hold it as you grag to select an area with right click 
