@@ -141,7 +141,7 @@ class Structure:
         print('successfully saved')
 
     def load(self):
-        filename = input("Fileanamse: ")
+        filename = input("Filename: ")
         data = {}
         try:
             with open(filename,'r') as f:
