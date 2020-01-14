@@ -7,9 +7,9 @@ Poly Bridge is a bridge-building simulation-puzzle game, developed by New Zealan
 3. Once you click the start button, players will be enable to select their map.
 4. There are three maps for players to choose, and each map has different obstacles.
 5. After choosing the map, players will get into the game screen, and they can start building their bridges by either right clicking or left clicking to create their own structures.
-6. The total number of floor trusses and wood trusses is limited, players can see how many available trusses at the top-right corner.
+6. The total number of road trusses and wood trusses is limited, players can see how many available trusses at the top-right corner.
 7. Notice that at the top-left corner, there are some words that describe the modes and states that the players are in.
-8. In floor mode, the trusses that players create are black, and cars can walk on them.
+8. In road mode, the trusses that players create are black, and cars can walk on them.
 9. In wood mode, the trusses that players create are brown. They are created to enhance the structure, and cars cannot walk on them.
 10. In stop state, the bridge will not have any displacement while cars walking on it.
 11. In running state, the bridge will be able to have displacement and may even collapse.
@@ -81,7 +81,7 @@ Or go to the [website](https://github.com/redxouls/Final_Project.git) tand find 
 
 ## Part I: Class Explan
 ### Controller:
-#### * Usage: It controls and manipulate other classes by calling their class methods and gether all information.response to every mouse control and keyborad when `main.py` calls.
+#### * Usage: It controls and manipulate other classes by calling their class methods and gather all information.response to every mouse control and keyborad when `main.py` calls.
 
 #### * Function: Including 4 main types (1) interface changing  (2) screen update (3)add new object and store them in according attribute (4) modify or delete existing objects 
 ### Structure
@@ -169,7 +169,7 @@ class Controller():
         self.balls = []
         self.t = 0
 ```
-***Function:*** Import needed modules and declare numerous variblese for mouse control, mode switching, game status, temporarily saved coordinate.
+***Function:*** Import needed modules and declare numerous variables for mouse control, mode switching, game status, temporarily saved coordinate.
 
 ***Return:*** None
 ```python=
@@ -322,7 +322,7 @@ def __init__(self,controller,pos):
     self._ticks_to_next_ball = 10
     self._update_balls()
 ```
-***Function:*** Initializing car object with given `controller` , `pos`.After loading the structure and the car postion, we create a space and put all trusses into a space accordingly. 
+***Function:*** Initializing car object with given `controller` , `pos`.After loading the structure and the car position, we create a space and put all trusses into a space accordingly. 
 
 ***Return:*** None
 ```python=
