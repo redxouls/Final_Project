@@ -43,6 +43,10 @@ while True:
     if not main_controller.game_running and main_controller.choose_map:
         main_controller.choose_map_interface()
         for event in pygame.event.get():
+            if event.type == QUIT:
+                main_controller.structure.print_result()
+                pygame.quit()
+                sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 downcod = pygame.mouse.get_pos()
                 if main_controller.click_map1_button(downcod):
@@ -140,6 +144,10 @@ while True:
         main_controller.running = False
        
         for event in pygame.event.get():
+            if event.type == QUIT:
+                main_controller.structure.print_result()
+                pygame.quit()
+                sys.exit()
             if event.type == KEYDOWN:
                 main_controller.win = False
                 main_controller.game_running = False
@@ -147,6 +155,10 @@ while True:
     ##esc(in the game)
     if main_controller.game_running and main_controller.esc_or_not and not main_controller.button_help:  
         for event in pygame.event.get():
+            if event.type == QUIT:
+                main_controller.structure.print_result()
+                pygame.quit()
+                sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 downcod = pygame.mouse.get_pos()
                 if main_controller.click_esc_exit_button(downcod):
@@ -170,6 +182,10 @@ while True:
     if main_controller.game_running and not main_controller.esc_or_not and main_controller.button_help:
         main_controller.help_interface()
         for event in pygame.event.get():
+            if event.type == QUIT:
+                main_controller.structure.print_result()
+                pygame.quit()
+                sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 main_controller.first_click = True
                 main_controller.button_help = False
