@@ -38,3 +38,22 @@ class Truss():
     
     def length(self):
         return mag(self.nodeA.pos-self.nodeB.pos)
+    def truss_touch(self,other):
+        px1 = (self.nodeA.pos.x,self.nodeB.pos.x-self.nodeA.pos.x)
+        py1 = (self.nodeA.pos.y,self.nodeB.pos.y-self.nodeA.pos.y)
+        px2 = (other.nodeA.pos.x,other.nodeB.pos.x-other.nodeA.pos.x)
+        py2 = (other.nodeA.pos.y,other.nodeB.pos.y-other.nodeA.pos.y)
+        a1 = px1[1]
+        b1 = -px2[1]
+        c1 = px2[0]-px1[0]
+        a2 = py1[1]
+        b2 = -py2[1]
+        c2 = py2[0]-py1[0]
+        delta = (a1*b2-a2*b1)
+        if delta == 0:
+            return True
+        deltax = (c1*b2-c2*b1)
+        deltay = (a1*c2-a2*c1)
+        if 0 <= deltax/delta <= 1 and 0 <= deltay/delta <= 1:
+            return True
+        return False
