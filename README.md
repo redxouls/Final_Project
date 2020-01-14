@@ -30,6 +30,10 @@ pip install anastruct
 pip install vpython
 pip install pymunk
 ```
+Enter this in your termianl to download the game
+```git clone https://github.com/redxouls/Final_Project.git```
+
+Or go to the [website](https://github.com/redxouls/Final_Project.git) tand find the button clone or download
 ### Executing
 1. After the installation, you have to keep all files in the same folder ( including `main.py`, `Structure.py`, `Controller.py`, `Car.py`, `Truss.py`,`Node.py`, `Bio.py and file for loading test).
 2. *If you have a input file to load existing pattern, also keep the files in the same folder(./)
@@ -59,7 +63,7 @@ pip install pymunk
 #### `2. "2" :` To set up "Wood" Truss(which is brown)
 #### * Runing Trial
 #### `3. "4" :` After each test press it to recover
-#### `4. "Shift" :` To stop or run the test
+#### `4. "Shiift" :` To stop or run the test
 #### `5. "Space" :` Put a car onto the field
 #### * Modification of the bridge
 #### `6. "d" :` Press and Hold it as you grag to select an area with right click 
@@ -97,7 +101,7 @@ pip install pymunk
 
 #### * Function: (1) draw the car (2) transform road to pymunk object that the car can move on
 ### Ball
-#### * Usage: When Car is moving Ball keep track of its phsics parameter and detect which truss to load on 
+#### * Usage: When Car is moving Ball keep track of its physics parameter and detect which truss to load on 
 
 #### * Function: (1)calculate the distance between the nearest truss and its center of mass (2)detect collision with truss to apply load on structure
 
@@ -133,8 +137,8 @@ root,sub1,sub2,,reset,cell1,cell2
 
 | Variables|Type| Usage |
 | :--------: | :--------: | -------- |
-|main_controoler|Controller|Controll all other objects|
-|main_controoler.structure|Structure|Store all trusses and nodes|
+|main_controller|Controller|Control all other objects|
+|main_controller.structure|Structure|Store all trusses and nodes|
 |bg,screen|pygame object|Pygame Object to control the Gaming Screen|
 |clock|pygame object|Pygame Object to Control the screen's update speed |
 
@@ -355,7 +359,7 @@ def _create_ball(self,setpos=None):
     pymunk.SimpleMotor(wheel2_b, chassi_b, speed)
     )
 ```
-***Function:*** We first create two circles,we designate their masses and radius.Then we create a box and designate its size and mass.Later we add them to space,and use pin joints to connect them.Finally,we give the car its speed and angular velocity by SimpleMotor.
+***Function:*** We first create two circles,we designate their masses and radius.Then we create a box and designate its size and mass.Later we add them to space,and use pin joints to connect them.Finally,we give the car its speed and angular velocity by SimpleMotor.(This function partially references the pymunk documentaion)
 
 ***Return:*** None. 
 ```python=
@@ -610,7 +614,7 @@ class Ball:
         self.a = vector(0,self.g,0)
         self.free = True
 ```
-***Function:*** Initiallize several phsics parameter to track the movement of the two wheels of the car.
+***Function:*** Initiallize several physics parameters to track the movement of the two wheels of the car.
 
 ***Return:*** None
 ```python=
@@ -679,7 +683,7 @@ class Bio():
         self.b =  0.05 * sqrt(self.bond.k*self.O.m)
         self.gravity = vector(0,9.8,0)
 ```
-***Function:*** Initiallize phsics parameters for falling trusses, and take advantage of both node and truss two class
+***Function:*** Initiallize physics parameters for falling trusses, and take advantage of both node and truss two class
 
 ***Return:*** None
 ```python=
@@ -702,7 +706,7 @@ class Bio():
         self.bond.axis = self.C.pos - self.O.pos
         self.bond.pos = self.O.pos
 ```
-***Function:*** The trusses move over time like a phsics simulation, and this function update these objects position, velocity, and accerlation
+***Function:*** The trusses move over time like a physics simulation, and this function update these objects position, velocity, and accerlation
 
 ***Return:*** None
 ```python=
@@ -767,8 +771,7 @@ class Bio():
 ![](https://i.imgur.com/59pc88o.jpg)
 ![](https://i.imgur.com/eyl4CtU.jpg)
 ![](https://i.imgur.com/0QEYeWx.jpg)
-* To keep the structure stable,we construct the trusses in a triangular form.Also,we build it like an arc so that it undertakes more weight.Surely,there are no standard answers for games,so just utilize your creativity and have fun.
-
+/iTo keep the structure stable,we construct the trusses in a triangular form.Also,we build it like an arc so that it undertakes more weight.Surely,there are no standard answers for games,so just utilize your creativity and have fun.a
 * For example video.Here's the [link](https://drive.google.com/file/d/1fbx8Q-HZ9SAvJcgNmakLJyEbfEgf52qX/view)
 
 ### See more information on https://github.com/redxouls/Final_Project
@@ -779,5 +782,39 @@ class Bio():
 * [pygame](https://www.pygame.org/news) - module used to visualize the game
 * [anastruct](https://github.com/ritchie46/anaStruct) - For Bridge deformation and analyze
 * [pymunk](http://www.pymunk.org/en/latest/) - For the car's movement and collision detection
-* [vpython](https://vpython.org/) - Using vectors and phsics tools
+* [vpython](https://vpython.org/) - Using vectors and physics tools
 
+## Contributions
+
+
+### 1. 陳宏恩
+* ***In charge of the main structure of this game and Final integration of different classes***
+* ***Interaction between Objects(Truss&Ball&Car&Structure)***
+* ***Coordinate between differnet modules(Anastruct ananlyzing, pymunk segmentaion loading and the collapse animation of the bridge)***
+* ***Structure Ouput and Load***
+* Captain Teemo on duty
+* Carry the whole team
+* GPA 4.301
+* Cotton picking master
+* King of Africa
+* Final exam got 91 points
+![Sleeping soundly](https://i.imgur.com/UZyT5A0.jpg)
+### 2. 翁茂齊
+* ***In charge of screen updating and all gaming interfaces***
+* ***Find picture materials and Master of 小畫家***
+* ***Bridge collapse judging and Game status Controlling***
+* ***Lots of pygame object dispay*** 
+* Beated Mason on Calculus quiz by 20 points
+* Loose sphincter?!
+* Guitar God
+* Violin God
+* Master of tkinter
+![Mochi](https://i.imgur.com/PVeFlkc.jpg)
+### 3. 汪昊新 
+* ***In charge of mouse controll(deleting/moving trusses and nodes) and keyboard controll***
+* ***bridge edition and Car movement (pymunk)***
+* ***Obstacles interaction handling***
+* ***Deal with complicated physic stuff and is a math genius***
+* The One and only, who think the Final Exam is a piece of cake and leave two hours earlier before the due time
+* master of dynamic bullshitting
+![handsome young man](https://i.imgur.com/kL4iQ8O.jpg)
